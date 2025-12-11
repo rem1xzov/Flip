@@ -106,6 +106,8 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Clear();
 });
 
+// ... существующий код
+
 var app = builder.Build();
 
 // Настройка middleware pipeline
@@ -132,34 +134,33 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.UseStaticFiles(); 
+// ВАЖНО: Порядок имеет значение!
+app.UseDefaultFiles(); // Сначала это
+app.UseStaticFiles();  // Потом это
 
 // Rate Limiting
 app.UseRateLimiter();
 
 app.UseForwardedHeaders();
-// В Dev разрешаем работать по HTTP (для file:// фронта)
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
-// Кастомный middleware для логирования
+
 app.UseMiddleware<RequestLoggingMiddleware>();
-
 app.UseRouting();
-
-// CORS должен быть после UseRouting и до MapHub/MapControllers
 app.UseCors("ChatPolicy");
-
 app.UseAuthorization();
 
 // Настройка SignalR Hub с привязанной CORS политикой
 app.MapHub<ChatHub>("/chat").RequireCors("ChatPolicy");
-
 app.MapControllers().RequireCors("ChatPolicy");
 
 // Health check endpoint
 app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow }));
+
+// ВАЖНО: Добавьте fallback для SPA
+app.MapFallbackToFile("/index.html");
 
 try
 {
