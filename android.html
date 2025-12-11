@@ -722,6 +722,21 @@
     }
 
     function getHubUrl() {
+        function getHubUrl() {
+            // Для Railway с HTTPS
+            if (window.location.hostname.includes('railway.app')) {
+                return `wss://${window.location.host}/chat`;
+            }
+
+            // Для локальной разработки
+            if (window.location.hostname === 'localhost') {
+                return 'http://localhost:8080/chat';
+            }
+
+            // По умолчанию - протокол текущей страницы
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            return `${protocol}//${window.location.host}/chat`;
+        }
         // 1) Приоритет: ручная настройка через глобальную переменную
         if (window.FLIPCHAT_BACKEND_URL && typeof window.FLIPCHAT_BACKEND_URL === 'string') {
             return window.FLIPCHAT_BACKEND_URL.replace(/\/+$/, '') + '/chat';
