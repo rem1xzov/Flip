@@ -25,6 +25,11 @@ COPY --from=build /app/publish .
 RUN mkdir -p /app/wwwroot
 COPY android.html /app/wwwroot/index.html
 
+# Проверка
+RUN echo "Checking wwwroot:" && ls -la /app/wwwroot/ && \
+    echo "File content (first 5 lines):" && head -5 /app/wwwroot/index.html
+
 ENV ASPNETCORE_URLS="http://+:8080"
 EXPOSE 8080
 ENTRYPOINT ["dotnet", "FlipChatAnon.dll"]
+
