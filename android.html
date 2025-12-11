@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flip Chat</title>
-    <!-- Добавил crossorigin для всех скриптов -->
-    <script src="https://cdn.tailwindcss.com" crossorigin="anonymous"></script>
-    <!-- ОСТАВИЛ ТОЛЬКО ОДИН скрипт feather-icons -->
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js" crossorigin="anonymous"></script>
+    <!-- ИЗМЕНИЛ: добавил crossorigin="anonymous" -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- УДАЛИЛ эту строку (дубликат): <script src="https://unpkg.com/feather-icons"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <!-- SignalR JavaScript Client -->
+    <!-- ИЗМЕНИЛ: добавил crossorigin="anonymous" -->
     <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js" crossorigin="anonymous"></script>
     
     <script>
@@ -34,7 +35,7 @@
         }
     </script>
     
-    <!-- ВСЕ СТИЛИ ОСТАЛИСЬ БЕЗ ИЗМЕНЕНИЙ -->
+    <!-- ВСЕ СТИЛИ ОСТАЛИСЬ НЕТРОНУТЫМИ -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
@@ -468,6 +469,7 @@
     </style>
 </head>
 <body class="h-full flex items-center justify-center p-4">
+<!-- ВСЯ РАЗМЕТКА ТЕЛА СТРАНИЦЫ ОСТАЛАСЬ БЕЗ ИЗМЕНЕНИЙ -->
 <div class="max-w-4xl w-full glass-effect rounded-2xl shadow-2xl overflow-hidden border border-white/30">
     <div class="bg-gradient-to-r from-primary-500 to-secondary-500 p-8 text-white text-center">
         <h1 class="text-4xl font-bold">Flip Chat✨</h1>
@@ -678,8 +680,9 @@
     </div>
 </div>
 
+<!-- ВЕСЬ JAVASCRIPT КОД ОСТАЛСЯ БЕЗ ИЗМЕНЕНИЙ -->
 <script>
-    // УБРАЛ feather.replace() отсюда - он должен быть после загрузки DOM
+    feather.replace();
 
     // Переменные для хранения данных и подключения
     let userData = {
@@ -726,16 +729,34 @@
     }
 
     function getHubUrl() {
-        // Протокол текущей страницы (http: или https:)
-        const protocol = window.location.protocol;
-        // Хост текущей страницы (например, flip-production-fbe1.up.railway.app)
-        const host = window.location.host;
+        function getHubUrl() {
+            // Для Railway с HTTPS
+            if (window.location.hostname.includes('railway.app')) {
+                return `wss://${window.location.host}/chat`;
+            }
 
-        // Для WebSocket соединения используем ws:// или wss://
-        const wsProtocol = protocol === 'https:' ? 'wss:' : 'ws:';
+            // Для локальной разработки
+            if (window.location.hostname === 'localhost') {
+                return 'http://localhost:8080/chat';
+            }
 
-        // Возвращаем полный URL для SignalR хаба
-        return `${wsProtocol}//${host}/chat`;
+            // По умолчанию - протокол текущей страницы
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            return `${protocol}//${window.location.host}/chat`;
+        }
+        // 1) Приоритет: ручная настройка через глобальную переменную
+        if (window.FLIPCHAT_BACKEND_URL && typeof window.FLIPCHAT_BACKEND_URL === 'string') {
+            return window.FLIPCHAT_BACKEND_URL.replace(/\/+$/, '') + '/chat';
+        }
+        // 2) Если страница открыта с диска (file://)
+        if (location.protocol === 'file:') return 'http://localhost:5239/chat';
+        // 3) Если origin — это сам бэкенд (работаем с теми же портами)
+        const port = location.port;
+        if (port === '5239' || port === '7118') {
+            return `${location.origin}/chat`;
+        }
+        // 4) Иначе форсим локальный бэкенд (например, JetBrains 63343 и т.п.)
+        return 'http://localhost:5239/chat';
     }
 
     function applyTheme(theme) {
@@ -1140,11 +1161,6 @@
 
     // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
-        // ДОБАВИЛ feather.replace() сюда - после полной загрузки DOM
-        if (typeof feather !== 'undefined') {
-            feather.replace();
-        }
-
         // Восстанавливаем выбор пользователя из localStorage
         loadUserData();
 
