@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flip Chat</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <!-- Добавил crossorigin для всех скриптов -->
+    <script src="https://cdn.tailwindcss.com" crossorigin="anonymous"></script>
+    <!-- ОСТАВИЛ ТОЛЬКО ОДИН скрипт feather-icons -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js" crossorigin="anonymous"></script>
     <!-- SignalR JavaScript Client -->
-    <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+    <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js" crossorigin="anonymous"></script>
+    
     <script>
         tailwind.config = {
             theme: {
@@ -31,6 +33,8 @@
             }
         }
     </script>
+    
+    <!-- ВСЕ СТИЛИ ОСТАЛИСЬ БЕЗ ИЗМЕНЕНИЙ -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
@@ -675,7 +679,7 @@
 </div>
 
 <script>
-    feather.replace();
+    // УБРАЛ feather.replace() отсюда - он должен быть после загрузки DOM
 
     // Переменные для хранения данных и подключения
     let userData = {
@@ -722,30 +726,16 @@
     }
 
     function getHubUrl() {
-    // Протокол текущей страницы (http: или https:)
-    const protocol = window.location.protocol;
-    // Хост текущей страницы (например, flip-production-fbe1.up.railway.app)
-    const host = window.location.host;
-    
-    // Для WebSocket соединения используем ws:// или wss://
-    const wsProtocol = protocol === 'https:' ? 'wss:' : 'ws:';
-    
-    // Возвращаем полный URL для SignalR хаба
-    return `${wsProtocol}//${host}/chat`;
-}
-        // 1) Приоритет: ручная настройка через глобальную переменную
-        if (window.FLIPCHAT_BACKEND_URL && typeof window.FLIPCHAT_BACKEND_URL === 'string') {
-            return window.FLIPCHAT_BACKEND_URL.replace(/\/+$/, '') + '/chat';
-        }
-        // 2) Если страница открыта с диска (file://)
-        if (location.protocol === 'file:') return 'http://localhost:5239/chat';
-        // 3) Если origin — это сам бэкенд (работаем с теми же портами)
-        const port = location.port;
-        if (port === '5239' || port === '7118') {
-            return `${location.origin}/chat`;
-        }
-        // 4) Иначе форсим локальный бэкенд (например, JetBrains 63343 и т.п.)
-        return 'http://localhost:5239/chat';
+        // Протокол текущей страницы (http: или https:)
+        const protocol = window.location.protocol;
+        // Хост текущей страницы (например, flip-production-fbe1.up.railway.app)
+        const host = window.location.host;
+
+        // Для WebSocket соединения используем ws:// или wss://
+        const wsProtocol = protocol === 'https:' ? 'wss:' : 'ws:';
+
+        // Возвращаем полный URL для SignalR хаба
+        return `${wsProtocol}//${host}/chat`;
     }
 
     function applyTheme(theme) {
@@ -1150,6 +1140,11 @@
 
     // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
+        // ДОБАВИЛ feather.replace() сюда - после полной загрузки DOM
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+
         // Восстанавливаем выбор пользователя из localStorage
         loadUserData();
 
@@ -1185,4 +1180,3 @@
 </script>
 </body>
 </html>
-
