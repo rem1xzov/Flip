@@ -1,0 +1,6 @@
+@FlipChatAnon_HostAddress = http://localhost:5239
+
+GET {{FlipChatAnon_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
