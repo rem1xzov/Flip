@@ -2,8 +2,10 @@
 <html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Flip Chat</title>
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -142,38 +144,63 @@
         #messagesContainer {
             -webkit-overflow-scrolling: touch !important;
             overflow-y: auto !important;
+            overflow-x: hidden !important;
             touch-action: pan-y !important;
             overscroll-behavior: contain !important;
+            overscroll-behavior-y: contain !important;
             transform: translateZ(0); /* Аппаратное ускорение для плавного скролла */
             -webkit-transform: translateZ(0);
+            scroll-behavior: smooth;
         }
         
         /* Улучшаем производительность скролла */
         #chatInterface {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            max-height: 100vh !important;
+            overflow: hidden !important;
+        }
+        
+        /* Специальные стили для Telegram Web App */
+        html, body {
+            height: 100% !important;
+            width: 100% !important;
+            overflow: hidden !important;
+            position: fixed !important;
+            touch-action: pan-y !important;
         }
 
         /* ТОЛЬКО адаптация для мобильных - ничего не меняем кроме размеров */
         @media (max-width: 768px) {
+            html {
+                height: 100% !important;
+                overflow: hidden !important;
+            }
+            
             body {
                 padding: 0 !important;
                 margin: 0 !important;
-                height: 100vh;
-                overflow: hidden;
-                position: fixed;
-                width: 100%;
-                touch-action: pan-y;
+                height: 100vh !important;
+                height: -webkit-fill-available !important; /* Для iOS Safari */
+                overflow: hidden !important;
+                position: fixed !important;
+                width: 100% !important;
+                touch-action: pan-y !important;
+                -webkit-overflow-scrolling: touch !important;
             }
 
             body > div.max-w-4xl {
                 width: 100% !important;
                 max-width: 100% !important;
                 height: 100vh !important;
+                height: -webkit-fill-available !important; /* Для iOS Safari */
                 margin: 0 !important;
                 border-radius: 0 !important;
                 border: none !important;
+                display: flex !important;
+                flex-direction: column !important;
+                overflow: hidden !important;
             }
 
             #setupForm, #waitingScreen {
@@ -189,17 +216,27 @@
             }
 
             /* ФИКС СКРОЛЛА: Правильная высота для контейнера сообщений */
+            #chatInterface {
+                height: 100vh !important;
+                height: -webkit-fill-available !important;
+                display: flex !important;
+                flex-direction: column !important;
+                overflow: hidden !important;
+            }
+            
             #messagesContainer {
-                height: calc(100vh - 180px) !important;
-                max-height: calc(100vh - 180px) !important;
+                flex: 1 !important;
+                min-height: 0 !important;
                 padding: 15px !important;
                 overflow-y: auto !important;
                 overflow-x: hidden !important;
                 -webkit-overflow-scrolling: touch !important;
                 touch-action: pan-y !important;
                 overscroll-behavior: contain !important;
-                will-change: scroll-position;
-                position: relative;
+                overscroll-behavior-y: contain !important;
+                will-change: scroll-position !important;
+                position: relative !important;
+                scroll-behavior: smooth !important;
             }
 
             /* Увеличиваем кнопки для нажатия пальцем */
@@ -232,11 +269,9 @@
             .text-lg { font-size: 1rem !important; }
 
             /* ФИКС СКРОЛЛА: Исправляем позиционирование поля ввода */
-            .border-t.border-gray-200 {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
+            #chatInterface > .border-t.border-gray-200 {
+                position: relative !important;
+                flex-shrink: 0 !important;
                 background: white;
                 padding: 15px !important;
                 z-index: 100;
@@ -258,6 +293,11 @@
             #messageInput {
                 font-size: 16px !important;
                 height: 50px !important;
+            }
+            
+            /* ФИКС: Когда фокус на поле ввода, скроллим вниз */
+            #messageInput:focus {
+                scroll-margin-bottom: 100px;
             }
 
             #sendMessageBtn {
@@ -331,9 +371,9 @@
             #setupForm {
                 padding: 0.75rem !important;
                 flex: 1;
+                min-height: 0;
                 overflow-y: auto !important;
                 -webkit-overflow-scrolling: touch;
-                height: auto;
             }
 
             /* Одна колонка для мобильных */
@@ -429,9 +469,17 @@
             }
 
             /* ФИКС СКРОЛЛА: Правильная высота для чата в портретной ориентации */
+            #chatInterface {
+                height: 100vh !important;
+                height: -webkit-fill-available !important;
+                display: flex !important;
+                flex-direction: column !important;
+                overflow: hidden !important;
+            }
+            
             #messagesContainer {
-                height: calc(100vh - 140px) !important;
-                max-height: calc(100vh - 140px) !important;
+                flex: 1 !important;
+                min-height: 0 !important;
                 padding: 0.5rem !important;
                 padding-bottom: 80px !important;
                 overflow-y: auto !important;
@@ -439,8 +487,10 @@
                 -webkit-overflow-scrolling: touch !important;
                 touch-action: pan-y !important;
                 overscroll-behavior: contain !important;
-                will-change: scroll-position;
-                position: relative;
+                overscroll-behavior-y: contain !important;
+                will-change: scroll-position !important;
+                position: relative !important;
+                scroll-behavior: smooth !important;
             }
 
             #messageInput {
@@ -482,7 +532,9 @@
             }
 
             /* ФИКС СКРОЛЛА: Уменьшаем панель ввода в портретной ориентации */
-            .border-t.border-gray-200 {
+            #chatInterface > .border-t.border-gray-200 {
+                position: relative !important;
+                flex-shrink: 0 !important;
                 padding: 10px !important;
             }
         }
@@ -518,28 +570,48 @@
             }
 
             /* ФИКС СКРОЛЛА: Уменьшаем отступ для сообщений на маленьких экранах */
+            #chatInterface {
+                height: 100vh !important;
+                height: -webkit-fill-available !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
             #messagesContainer {
+                flex: 1 !important;
+                min-height: 0 !important;
                 padding-bottom: 70px !important;
                 overflow-y: auto !important;
                 overflow-x: hidden !important;
                 -webkit-overflow-scrolling: touch !important;
                 touch-action: pan-y !important;
+                overscroll-behavior-y: contain !important;
             }
         }
 
         /* Горизонтальная ориентация - используем стандартные стили */
         @media (max-width: 768px) and (orientation: landscape) {
             /* ФИКС СКРОЛЛА: В ландшафтной ориентации меньше высота */
+            #chatInterface {
+                height: 100vh !important;
+                height: -webkit-fill-available !important;
+                display: flex !important;
+                flex-direction: column !important;
+                overflow: hidden !important;
+            }
+            
             #messagesContainer {
-                height: calc(100vh - 120px) !important;
-                max-height: calc(100vh - 120px) !important;
+                flex: 1 !important;
+                min-height: 0 !important;
                 padding-bottom: 80px !important;
                 overflow-y: auto !important;
                 overflow-x: hidden !important;
                 -webkit-overflow-scrolling: touch !important;
                 touch-action: pan-y !important;
                 overscroll-behavior: contain !important;
-                will-change: scroll-position;
+                overscroll-behavior-y: contain !important;
+                will-change: scroll-position !important;
+                scroll-behavior: smooth !important;
             }
         }
     </style>
@@ -836,8 +908,10 @@
             // Обработчики событий чата
             connection.on("ReceiveMessage", (message) => {
                 addMessageToChat(message.text, false);
-                // ФИКС: Автоматический скролл вниз при получении сообщения
-                scrollToBottom();
+                // ФИКС: Автоматический скролл вниз при получении сообщения (несколько попыток)
+                requestAnimationFrame(() => {
+                    scrollToBottom();
+                });
             });
 
             connection.on("MatchFound", (companion) => {
@@ -851,8 +925,10 @@
                 } else if (companionInfoEl) {
                     companionInfoEl.textContent = '';
                 }
-                // ФИКС: Скролл вниз при открытии чата
+                // ФИКС: Скролл вниз при открытии чата (несколько попыток)
                 setTimeout(scrollToBottom, 100);
+                setTimeout(scrollToBottom, 300);
+                setTimeout(scrollToBottom, 500);
             });
 
             connection.on("UserJoined", (message) => {
@@ -918,18 +994,27 @@
         }
     }
 
-    // ФИКС: Функция для автоматического скролла вниз
+    // ФИКС: Функция для автоматического скролла вниз (улучшена для Telegram Web App)
     function scrollToBottom() {
-        if (messagesContainer) {
-            // Используем requestAnimationFrame для плавного скролла
-            requestAnimationFrame(() => {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                // Дополнительная проверка для мобильных устройств
-                setTimeout(() => {
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                }, 100);
-            });
-        }
+        if (!messagesContainer) return;
+        
+        // Множественные попытки для надежности на мобильных устройствах
+        const scroll = () => {
+            const maxScroll = messagesContainer.scrollHeight - messagesContainer.clientHeight;
+            messagesContainer.scrollTop = maxScroll;
+        };
+        
+        // Немедленный скролл
+        scroll();
+        
+        // Через requestAnimationFrame
+        requestAnimationFrame(() => {
+            scroll();
+            // Дополнительные попытки для Telegram Web App
+            setTimeout(scroll, 50);
+            setTimeout(scroll, 150);
+            setTimeout(scroll, 300);
+        });
     }
 
     // Вспомогательные функции
@@ -993,9 +1078,19 @@
         chatInterface.classList.remove('hidden');
         waitingScreen.classList.add('hidden');
         isInChat = true;
+        
+        // Принудительно обновляем высоту контейнера для Telegram Web App
+        if (messagesContainer) {
+            messagesContainer.style.height = 'auto';
+            // Принудительный reflow
+            void messagesContainer.offsetHeight;
+        }
+        
         messageInput.focus();
-        // ФИКС: Скролл вниз при открытии чата
+        // ФИКС: Скролл вниз при открытии чата (несколько попыток для надежности)
+        setTimeout(scrollToBottom, 100);
         setTimeout(scrollToBottom, 300);
+        setTimeout(scrollToBottom, 500);
     }
 
     function addMessageToChat(text, isOwn = false) {
@@ -1022,7 +1117,11 @@
 
         messageDiv.appendChild(messageContent);
         messagesContainer.appendChild(messageDiv);
-        scrollToBottom();
+        
+        // Принудительный скролл после добавления сообщения
+        requestAnimationFrame(() => {
+            scrollToBottom();
+        });
     }
 
     function addSystemMessage(text) {
@@ -1172,6 +1271,13 @@
             sendMessage();
         }
     });
+    
+    // ФИКС: При фокусе на поле ввода скроллим вниз (для Telegram Web App)
+    messageInput.addEventListener('focus', function() {
+        setTimeout(() => {
+            scrollToBottom();
+        }, 300); // Даем время клавиатуре открыться
+    });
 
     messageInput.addEventListener('input', function() {
         const txt = messageInput.value.trim();
@@ -1212,8 +1318,52 @@
         startChatBtn.disabled = false;
     });
 
+    // Инициализация Telegram Web App (если доступно)
+    function initTelegramWebApp() {
+        if (window.Telegram && window.Telegram.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand(); // Разворачиваем приложение на весь экран
+            
+            // Обновляем высоту при изменении viewport
+            tg.viewportStableHeight = tg.viewportHeight;
+            
+            // Слушаем изменения высоты viewport (когда открывается/закрывается клавиатура)
+            tg.onEvent('viewportChanged', () => {
+                // Принудительно обновляем высоту контейнера
+                setTimeout(() => {
+                    if (messagesContainer && isInChat) {
+                        // Принудительный reflow
+                        void messagesContainer.offsetHeight;
+                        // Обновляем скролл
+                        requestAnimationFrame(() => {
+                            scrollToBottom();
+                        });
+                    }
+                }, 100);
+            });
+            
+            // Также слушаем изменения размера окна (для надежности)
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    if (messagesContainer && isInChat) {
+                        void messagesContainer.offsetHeight;
+                        requestAnimationFrame(() => {
+                            scrollToBottom();
+                        });
+                    }
+                }, 150);
+            });
+            
+            console.log('Telegram Web App инициализирован');
+        }
+    }
+    
     // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
+        initTelegramWebApp();
         loadUserData();
 
         if (userData.gender) {
