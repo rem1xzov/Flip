@@ -2,7 +2,7 @@
 <html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Flip Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
@@ -38,6 +38,8 @@
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
         /* Dark theme overrides */
         [data-theme="dark"] body {
@@ -138,19 +140,34 @@
             50% { opacity: 0.5; }
         }
 
-        /* ФИКС СКРОЛЛА: Улучшаем скролл на мобильных */
+        /* КРИТИЧЕСКИ ВАЖНЫЙ ФИКС ДЛЯ АНДРОИДА: правильный скролл */
         #messagesContainer {
-            -webkit-overflow-scrolling: touch !important;
             overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: contain !important;
+            scroll-behavior: smooth !important;
+            will-change: transform;
         }
 
-        /* ТОЛЬКО адаптация для мобильных - ничего не меняем кроме размеров */
+        #messagesContainer::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* ТОЛЬКО адаптация для мобильных */
         @media (max-width: 768px) {
             body {
                 padding: 0 !important;
                 margin: 0 !important;
                 height: 100vh;
+                width: 100vw;
                 overflow: hidden;
+                position: fixed;
+            }
+
+            html, body {
+                overflow: hidden;
+                height: 100%;
+                width: 100%;
             }
 
             body > div.max-w-4xl {
@@ -160,6 +177,11 @@
                 margin: 0 !important;
                 border-radius: 0 !important;
                 border: none !important;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
             }
 
             #setupForm, #waitingScreen {
@@ -174,12 +196,35 @@
                 gap: 20px !important;
             }
 
-            /* ФИКС СКРОЛЛА: Правильная высота для контейнера сообщений */
+            /* КРИТИЧЕСКИЙ ФИКС: правильный контейнер для чата на мобильных */
+            #chatInterface {
+                display: flex !important;
+                flex-direction: column !important;
+                height: 100vh !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: 100% !important;
+                background: white;
+            }
+
+            [data-theme="dark"] #chatInterface {
+                background: #111827;
+            }
+
             #messagesContainer {
-                height: calc(100vh - 180px) !important;
+                flex: 1 !important;
+                height: auto !important;
+                min-height: 0 !important;
                 padding: 15px !important;
+                padding-bottom: 100px !important;
                 overflow-y: scroll !important;
                 -webkit-overflow-scrolling: touch !important;
+                overscroll-behavior: contain !important;
+                scrollbar-width: none !important;
+                -ms-overflow-style: none !important;
             }
 
             /* Увеличиваем кнопки для нажатия пальцем */
@@ -211,33 +256,32 @@
             h2 { font-size: 1.25rem !important; }
             .text-lg { font-size: 1rem !important; }
 
-            /* ФИКС СКРОЛЛА: Исправляем позиционирование поля ввода */
+            /* ФИКС: Поле ввода внизу */
             .border-t.border-gray-200 {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: white;
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                background: white !important;
                 padding: 15px !important;
-                z-index: 100;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                z-index: 1000 !important;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1) !important;
+                border-top: 1px solid #e5e7eb !important;
             }
 
             [data-theme="dark"] .border-t.border-gray-200 {
-                background: #111827;
-                border-color: #374151;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
-            }
-
-            /* ФИКС СКРОЛЛА: Правильный отступ для сообщений */
-            #messagesContainer {
-                padding-bottom: 100px !important;
+                background: #111827 !important;
+                border-color: #374151 !important;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.3) !important;
             }
 
             /* Увеличиваем поле ввода */
             #messageInput {
                 font-size: 16px !important;
                 height: 50px !important;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
             }
 
             #sendMessageBtn {
@@ -246,9 +290,11 @@
                 padding: 15px !important;
             }
 
-            /* ФИКС СКРОЛЛА: Отключаем bounce эффект на iOS */
-            #messagesContainer {
-                overscroll-behavior: contain;
+            /* ФИКС: заголовок чата */
+            #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500 {
+                position: relative !important;
+                z-index: 100 !important;
+                flex-shrink: 0 !important;
             }
         }
 
@@ -272,6 +318,8 @@
                 margin: 0 !important;
                 height: 100vh;
                 overflow: hidden;
+                position: fixed;
+                width: 100vw;
             }
 
             body > div.max-w-4xl {
@@ -283,6 +331,7 @@
                 border: none !important;
                 display: flex;
                 flex-direction: column;
+                position: fixed;
             }
 
             /* Уменьшаем заголовок */
@@ -399,13 +448,10 @@
                 font-size: 0.9rem !important;
             }
 
-            /* ФИКС СКРОЛЛА: Правильная высота для чата в портретной ориентации */
+            /* КРИТИЧЕСКИЙ ФИКС: правильная высота для портретной ориентации */
             #messagesContainer {
-                height: calc(100vh - 140px) !important;
                 padding: 0.5rem !important;
                 padding-bottom: 80px !important;
-                overflow-y: scroll !important;
-                -webkit-overflow-scrolling: touch !important;
             }
 
             #messageInput {
@@ -446,7 +492,7 @@
                 gap: 0.75rem !important;
             }
 
-            /* ФИКС СКРОЛЛА: Уменьшаем панель ввода в портретной ориентации */
+            /* ФИКС: Уменьшаем панель ввода */
             .border-t.border-gray-200 {
                 padding: 10px !important;
             }
@@ -482,17 +528,16 @@
                 font-size: 0.75rem !important;
             }
 
-            /* ФИКС СКРОЛЛА: Уменьшаем отступ для сообщений на маленьких экранах */
+            /* ФИКС: Уменьшаем отступ для сообщений */
             #messagesContainer {
                 padding-bottom: 70px !important;
             }
         }
 
-        /* Горизонтальная ориентация - используем стандартные стили */
+        /* Горизонтальная ориентация */
         @media (max-width: 768px) and (orientation: landscape) {
-            /* ФИКС СКРОЛЛА: В ландшафтной ориентации меньше высота */
+            /* ФИКС: В ландшафтной ориентации меньше высота */
             #messagesContainer {
-                height: calc(100vh - 120px) !important;
                 padding-bottom: 80px !important;
             }
         }
@@ -739,37 +784,55 @@
     const charCounterEl = document.getElementById('charCounter');
     const newCompanionBtn = document.getElementById('newCompanionBtn');
 
-    // ФИКС: Правильная функция для получения URL хаба
+    // КРИТИЧЕСКИЙ ФИКС: функция для принудительного скролла на Android
+    function forceAndroidScroll() {
+        if (/Android/i.test(navigator.userAgent)) {
+            // На Android добавляем дополнительные стили
+            messagesContainer.style.webkitOverflowScrolling = 'touch';
+            messagesContainer.style.overflow = 'auto';
+            
+            // Принудительно инициализируем скролл
+            setTimeout(() => {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                messagesContainer.style.display = 'block';
+            }, 100);
+            
+            // Обработчик для тача на Android
+            messagesContainer.addEventListener('touchstart', function() {
+                this.style.overflow = 'auto';
+            });
+            
+            messagesContainer.addEventListener('touchend', function() {
+                this.style.overflow = 'auto';
+            });
+        }
+    }
+
+    // Функция для получения URL хаба
     function getHubUrl() {
-        // 1. Если есть глобальная настройка - используем ее
         if (window.FLIPCHAT_BACKEND_URL && typeof window.FLIPCHAT_BACKEND_URL === 'string') {
             let backendUrl = window.FLIPCHAT_BACKEND_URL.trim();
-            // Удаляем завершающие слэши
             backendUrl = backendUrl.replace(/\/+$/, '');
-            // Добавляем путь к хабу
             return backendUrl + '/chat';
         }
 
-        // 2. Для локального режима - используем текущий хост
         const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
         const host = window.location.host;
         
         return `${protocol}//${host}/chat`;
     }
 
-    // ФИКС: Упрощенная функция инициализации SignalR
+    // Функция инициализации SignalR
     function initializeSignalR() {
         try {
             const hubUrl = getHubUrl();
             console.log('Подключение к SignalR хабу:', hubUrl);
             
-            // Используем WebSocket с автоматическим переключением на LongPolling при необходимости
             connection = new signalR.HubConnectionBuilder()
                 .withUrl(hubUrl)
                 .withAutomaticReconnect([0, 1000, 3000, 5000])
                 .build();
 
-            // Обработчики событий подключения
             connection.onclose((error) => {
                 isConnected = false;
                 updateConnectionStatus('Отключено', 'text-red-400');
@@ -787,11 +850,8 @@
                 console.log('SignalR переподключился:', connectionId);
             });
 
-            // Обработчики событий чата
             connection.on("ReceiveMessage", (message) => {
                 addMessageToChat(message.text, false);
-                // ФИКС: Автоматический скролл вниз при получении сообщения
-                scrollToBottom();
             });
 
             connection.on("MatchFound", (companion) => {
@@ -802,11 +862,7 @@
                     const genderName = companion.gender === 'male' ? 'Мужчина' : companion.gender === 'female' ? 'Женщина' : 'Другое';
                     const ageName = companion.age === 'under14' ? 'До 14' : companion.age === '15-17' ? '15-17' : '18+';
                     if (companionInfoEl) companionInfoEl.textContent = `${genderName}, ${ageName}`;
-                } else if (companionInfoEl) {
-                    companionInfoEl.textContent = '';
                 }
-                // ФИКС: Скролл вниз при открытии чата
-                setTimeout(scrollToBottom, 100);
             });
 
             connection.on("UserJoined", (message) => {
@@ -853,7 +909,6 @@
                 }
             });
 
-            // Подключение
             connection.start()
                 .then(() => {
                     isConnected = true;
@@ -872,10 +927,24 @@
         }
     }
 
-    // ФИКС: Функция для автоматического скролла вниз
+    // ФИКС: Улучшенная функция скролла для Android
     function scrollToBottom() {
         if (messagesContainer) {
+            // Используем разные методы для лучшей совместимости
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Дополнительный способ для Android
+            setTimeout(() => {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                // Если на Android, добавляем дополнительную проверку
+                if (/Android/i.test(navigator.userAgent)) {
+                    messagesContainer.style.overflow = 'auto';
+                    setTimeout(() => {
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }, 50);
+                }
+            }, 50);
         }
     }
 
@@ -940,9 +1009,19 @@
         chatInterface.classList.remove('hidden');
         waitingScreen.classList.add('hidden');
         isInChat = true;
-        messageInput.focus();
-        // ФИКС: Скролл вниз при открытии чата
-        setTimeout(scrollToBottom, 300);
+        
+        // ФИКС: Даем время на отрисовку перед фокусом
+        setTimeout(() => {
+            messageInput.focus();
+            
+            // КРИТИЧЕСКИЙ ФИКС: Инициализация скролла для Android
+            if (/Android/i.test(navigator.userAgent)) {
+                forceAndroidScroll();
+            }
+            
+            // Скролл вниз
+            setTimeout(scrollToBottom, 300);
+        }, 100);
     }
 
     function addMessageToChat(text, isOwn = false) {
@@ -1159,6 +1238,13 @@
         startChatBtn.disabled = false;
     });
 
+    // КРИТИЧЕСКИЙ ФИКС: Обработка изменения ориентации экрана на мобильных
+    window.addEventListener('resize', function() {
+        if (isInChat) {
+            setTimeout(scrollToBottom, 200);
+        }
+    });
+
     // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
         loadUserData();
@@ -1188,6 +1274,13 @@
         // Инициализируем соединение
         initializeSignalR();
         sendMessageBtn.disabled = true;
+        
+        // КРИТИЧЕСКИЙ ФИКС: Предварительная инициализация для Android
+        if (/Android/i.test(navigator.userAgent)) {
+            // Предварительно настраиваем контейнер
+            messagesContainer.style.webkitOverflowScrolling = 'touch';
+            messagesContainer.style.overflow = 'auto';
+        }
     });
 </script>
 </body>
