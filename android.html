@@ -138,6 +138,12 @@
             50% { opacity: 0.5; }
         }
 
+        /* ФИКС СКРОЛЛА: Улучшаем скролл на мобильных */
+        #messagesContainer {
+            -webkit-overflow-scrolling: touch !important;
+            overflow-y: auto !important;
+        }
+
         /* ТОЛЬКО адаптация для мобильных - ничего не меняем кроме размеров */
         @media (max-width: 768px) {
             body {
@@ -160,6 +166,7 @@
                 padding: 20px !important;
                 height: 100%;
                 overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
             .grid.md\:grid-cols-2 {
@@ -167,9 +174,12 @@
                 gap: 20px !important;
             }
 
+            /* ФИКС СКРОЛЛА: Правильная высота для контейнера сообщений */
             #messagesContainer {
                 height: calc(100vh - 180px) !important;
                 padding: 15px !important;
+                overflow-y: scroll !important;
+                -webkit-overflow-scrolling: touch !important;
             }
 
             /* Увеличиваем кнопки для нажатия пальцем */
@@ -201,7 +211,7 @@
             h2 { font-size: 1.25rem !important; }
             .text-lg { font-size: 1rem !important; }
 
-            /* Фиксируем поле ввода внизу на мобильных */
+            /* ФИКС СКРОЛЛА: Исправляем позиционирование поля ввода */
             .border-t.border-gray-200 {
                 position: fixed;
                 bottom: 0;
@@ -210,21 +220,23 @@
                 background: white;
                 padding: 15px !important;
                 z-index: 100;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             }
 
             [data-theme="dark"] .border-t.border-gray-200 {
                 background: #111827;
                 border-color: #374151;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
             }
 
-            /* Добавляем отступ для сообщений чтобы не перекрывалось поле ввода */
+            /* ФИКС СКРОЛЛА: Правильный отступ для сообщений */
             #messagesContainer {
-                padding-bottom: 80px !important;
+                padding-bottom: 100px !important;
             }
 
             /* Увеличиваем поле ввода */
             #messageInput {
-                font-size: 16px !important; /* Отключает зум на iOS */
+                font-size: 16px !important;
                 height: 50px !important;
             }
 
@@ -232,6 +244,11 @@
                 min-width: 50px !important;
                 min-height: 50px !important;
                 padding: 15px !important;
+            }
+
+            /* ФИКС СКРОЛЛА: Отключаем bounce эффект на iOS */
+            #messagesContainer {
+                overscroll-behavior: contain;
             }
         }
 
@@ -382,9 +399,13 @@
                 font-size: 0.9rem !important;
             }
 
+            /* ФИКС СКРОЛЛА: Правильная высота для чата в портретной ориентации */
             #messagesContainer {
                 height: calc(100vh - 140px) !important;
                 padding: 0.5rem !important;
+                padding-bottom: 80px !important;
+                overflow-y: scroll !important;
+                -webkit-overflow-scrolling: touch !important;
             }
 
             #messageInput {
@@ -424,6 +445,11 @@
             .gap-10 {
                 gap: 0.75rem !important;
             }
+
+            /* ФИКС СКРОЛЛА: Уменьшаем панель ввода в портретной ориентации */
+            .border-t.border-gray-200 {
+                padding: 10px !important;
+            }
         }
 
         /* Для очень маленьких экранов в вертикальной ориентации */
@@ -455,11 +481,20 @@
                 padding: 0.5rem 0.75rem !important;
                 font-size: 0.75rem !important;
             }
+
+            /* ФИКС СКРОЛЛА: Уменьшаем отступ для сообщений на маленьких экранах */
+            #messagesContainer {
+                padding-bottom: 70px !important;
+            }
         }
 
         /* Горизонтальная ориентация - используем стандартные стили */
         @media (max-width: 768px) and (orientation: landscape) {
-            /* Используем существующие стили для горизонтальной ориентации */
+            /* ФИКС СКРОЛЛА: В ландшафтной ориентации меньше высота */
+            #messagesContainer {
+                height: calc(100vh - 120px) !important;
+                padding-bottom: 80px !important;
+            }
         }
     </style>
 </head>
@@ -704,27 +739,31 @@
     const charCounterEl = document.getElementById('charCounter');
     const newCompanionBtn = document.getElementById('newCompanionBtn');
 
-    // ИСПРАВЛЕНИЕ 1: Правильная функция для получения URL хаба
+    // ФИКС: Правильная функция для получения URL хаба
     function getHubUrl() {
-        // Если есть глобальная настройка - используем ее
+        // 1. Если есть глобальная настройка - используем ее
         if (window.FLIPCHAT_BACKEND_URL && typeof window.FLIPCHAT_BACKEND_URL === 'string') {
             let backendUrl = window.FLIPCHAT_BACKEND_URL.trim();
+            // Удаляем завершающие слэши
             backendUrl = backendUrl.replace(/\/+$/, '');
+            // Добавляем путь к хабу
             return backendUrl + '/chat';
         }
 
-        // Для локального режима - используем текущий хост
-        const protocol = window.location.protocol;
+        // 2. Для локального режима - используем текущий хост
+        const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
         const host = window.location.host;
+        
         return `${protocol}//${host}/chat`;
     }
 
-    // ИСПРАВЛЕНИЕ 2: Упрощенная инициализация SignalR
+    // ФИКС: Упрощенная функция инициализации SignalR
     function initializeSignalR() {
         try {
             const hubUrl = getHubUrl();
-            console.log('Подключение к SignalR:', hubUrl);
+            console.log('Подключение к SignalR хабу:', hubUrl);
             
+            // Используем WebSocket с автоматическим переключением на LongPolling при необходимости
             connection = new signalR.HubConnectionBuilder()
                 .withUrl(hubUrl)
                 .withAutomaticReconnect([0, 1000, 3000, 5000])
@@ -734,23 +773,25 @@
             connection.onclose((error) => {
                 isConnected = false;
                 updateConnectionStatus('Отключено', 'text-red-400');
-                console.log('Соединение закрыто:', error);
+                console.log('SignalR соединение закрыто:', error);
             });
 
             connection.onreconnecting((error) => {
                 updateConnectionStatus('Переподключение...', 'text-yellow-400');
-                console.log('Переподключение:', error);
+                console.log('SignalR переподключение:', error);
             });
 
             connection.onreconnected((connectionId) => {
                 isConnected = true;
                 updateConnectionStatus('Подключено', 'text-green-400');
-                console.log('Переподключился:', connectionId);
+                console.log('SignalR переподключился:', connectionId);
             });
 
             // Обработчики событий чата
             connection.on("ReceiveMessage", (message) => {
                 addMessageToChat(message.text, false);
+                // ФИКС: Автоматический скролл вниз при получении сообщения
+                scrollToBottom();
             });
 
             connection.on("MatchFound", (companion) => {
@@ -761,7 +802,11 @@
                     const genderName = companion.gender === 'male' ? 'Мужчина' : companion.gender === 'female' ? 'Женщина' : 'Другое';
                     const ageName = companion.age === 'under14' ? 'До 14' : companion.age === '15-17' ? '15-17' : '18+';
                     if (companionInfoEl) companionInfoEl.textContent = `${genderName}, ${ageName}`;
+                } else if (companionInfoEl) {
+                    companionInfoEl.textContent = '';
                 }
+                // ФИКС: Скролл вниз при открытии чата
+                setTimeout(scrollToBottom, 100);
             });
 
             connection.on("UserJoined", (message) => {
@@ -799,7 +844,7 @@
                     inner.textContent = 'Собеседник печатает...';
                     window._typingNode.appendChild(inner);
                     messagesContainer.appendChild(window._typingNode);
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    scrollToBottom();
                     return;
                 }
                 if (window._typingNode && !isTyping) {
@@ -823,7 +868,14 @@
 
         } catch (error) {
             console.error('Ошибка инициализации SignalR:', error);
-            showError('Ошибка инициализации SignalR');
+            showError('Ошибка инициализации SignalR: ' + error.message);
+        }
+    }
+
+    // ФИКС: Функция для автоматического скролла вниз
+    function scrollToBottom() {
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
     }
 
@@ -889,6 +941,8 @@
         waitingScreen.classList.add('hidden');
         isInChat = true;
         messageInput.focus();
+        // ФИКС: Скролл вниз при открытии чата
+        setTimeout(scrollToBottom, 300);
     }
 
     function addMessageToChat(text, isOwn = false) {
@@ -915,7 +969,7 @@
 
         messageDiv.appendChild(messageContent);
         messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        scrollToBottom();
     }
 
     function addSystemMessage(text) {
@@ -928,7 +982,7 @@
 
         messageDiv.appendChild(messageContent);
         messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        scrollToBottom();
         return messageDiv;
     }
 
@@ -965,7 +1019,7 @@
         }
     }
 
-    // Gender Selection
+    // Обработчики событий для выбора пола, возраста и темы
     const genderOptions = document.querySelectorAll('.gender-option');
     const compGenderOptions = document.querySelectorAll('.comp-gender-option');
 
@@ -993,7 +1047,6 @@
         });
     });
 
-    // Age Group Selection
     const ageGroups = document.querySelectorAll('.age-group');
     const compAgeGroups = document.querySelectorAll('.comp-age-group');
 
@@ -1029,9 +1082,7 @@
         });
     });
 
-    // Theme Selection
     const themeSelectors = document.querySelectorAll('.theme-selector');
-
     themeSelectors.forEach(selector => {
         selector.addEventListener('click', function() {
             themeSelectors.forEach(s => s.classList.remove('selected'));
@@ -1042,7 +1093,7 @@
         });
     });
 
-    // Start Chat Button
+    // Обработчики кнопок
     startChatBtn.addEventListener('click', function() {
         if (!isConnected) {
             showError('Нет подключения к серверу');
@@ -1063,7 +1114,6 @@
         }
     });
 
-    // Отправка сообщения по Enter
     messageInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             sendMessage();
@@ -1082,10 +1132,8 @@
         }
     });
 
-    // Кнопка отправки сообщения
     sendMessageBtn.addEventListener('click', sendMessage);
 
-    // Новый собеседник
     if (newCompanionBtn) {
         newCompanionBtn.addEventListener('click', function() {
             if (connection && connection.state === signalR.HubConnectionState.Connected) {
@@ -1095,7 +1143,6 @@
         });
     }
 
-    // Покинуть чат
     document.getElementById('leaveChatBtn').addEventListener('click', function() {
         if (connection && connection.state === signalR.HubConnectionState.Connected) {
             connection.stop();
@@ -1104,7 +1151,6 @@
         startChatBtn.disabled = false;
     });
 
-    // Отменить поиск
     document.getElementById('cancelSearchBtn').addEventListener('click', function() {
         if (connection && connection.state === signalR.HubConnectionState.Connected) {
             connection.stop();
