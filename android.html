@@ -763,6 +763,15 @@
                 isConnected = false;
                 updateConnectionStatus('Отключено', 'text-red-400');
                 console.log('SignalR соединение закрыто:', error);
+                
+                // ВАЖНЫЙ ФИКС: При закрытии соединения возвращаем на форму настроек
+                if (isInChat) {
+                    setTimeout(() => {
+                        clearChat();
+                        showSetupForm();
+                        startChatBtn.disabled = false;
+                    }, 100);
+                }
             });
 
             connection.onreconnecting((error) => {
@@ -916,6 +925,8 @@
         chatInterface.classList.add('hidden');
         waitingScreen.classList.add('hidden');
         isInChat = false;
+        // ФИКС: Всегда показываем форму настроек при запуске
+        clearChat();
     }
 
     function showWaitingScreen() {
@@ -1150,6 +1161,10 @@
 
     // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
+        // ВАЖНЫЙ ФИКС: Очищаем состояние чата при загрузке
+        clearChat();
+        showSetupForm();
+        
         loadUserData();
 
         if (userData.gender) {
