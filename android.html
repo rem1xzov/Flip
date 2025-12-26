@@ -18,26 +18,24 @@
                     colors: {
                         primary: { 500: '#7c3aed', 600: '#6d28d9' },
                         secondary: { 500: '#ec4899', 600: '#db2777' }
-                    }
+                    },
+                    borderRadius: { 'xl': '1rem', '2xl': '2rem' }
                 }
             }
         }
     </script>
 
     <style>
+        /* Точное копирование ваших стилей из файла */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
         
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            overflow: hidden; /* Фикс для мобильных */
+            height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .dark body {
-            background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+            flex-direction: column;
         }
 
         .glass-effect {
@@ -48,247 +46,208 @@
 
         .dark .glass-effect {
             background: rgba(17, 24, 39, 0.9);
-            border-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* Плавный скролл для сообщений */
-        #messagesContainer {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(124, 58, 237, 0.3) transparent;
+        /* Ваши стили активных кнопок */
+        .gender-option.active, .comp-gender-option.active, .age-group.active, .comp-age-group.active {
+            border-color: #7c3aed;
+            background-color: rgba(124, 58, 237, 0.05);
+            transform: scale(0.98);
         }
 
-        .selected {
-            ring: 3px;
-            ring-color: #7c3aed;
-            border-color: #7c3aed !important;
+        .dark .gender-option.active {
+            background-color: rgba(124, 58, 237, 0.15);
+        }
+
+        /* Кастомный скролл как в оригинале */
+        #messagesContainer::-webkit-scrollbar { width: 4px; }
+        #messagesContainer::-webkit-scrollbar-thumb { background: rgba(124, 58, 237, 0.2); border-radius: 10px; }
+        
+        .chat-bubble-own {
+            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+            border-bottom-right-radius: 4px;
         }
         
-        /* Анимация появления сообщений */
-        .chat-message {
-            animation: fadeIn 0.2s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        .chat-bubble-other {
+            border-bottom-left-radius: 4px;
         }
     </style>
 </head>
-<body class="p-0 sm:p-4">
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
 
-<div class="w-full max-w-4xl h-screen sm:h-[90vh] glass-effect sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-white/20">
-    
-    <div class="bg-gradient-to-r from-primary-500 to-secondary-500 p-4 sm:p-6 text-white text-center shrink-0">
-        <h1 class="text-2xl sm:text-3xl font-bold">Flip Chat✨</h1>
-        <div id="connectionStatus" class="text-xs opacity-80 mt-1">
-            <span id="statusText">Подключение...</span>
-        </div>
-    </div>
-
-    <div class="flex-1 relative overflow-hidden flex flex-col">
+    <div id="mainContainer" class="flex-1 flex flex-col max-w-xl mx-auto w-full h-full relative">
         
-        <div id="setupForm" class="absolute inset-0 z-10 p-4 sm:p-8 overflow-y-auto bg-white/50 dark:bg-gray-900/50">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-4">
-                    <h2 class="text-xl font-semibold border-b pb-2 dark:text-white">Ваш профиль</h2>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button class="gender-btn p-3 rounded-xl border-2 dark:text-gray-300 dark:border-gray-700 hover:border-primary-500 transition-all flex flex-col items-center" data-type="user" data-val="male">
-                            <i data-feather="user"></i> <span class="text-xs mt-1">Муж.</span>
-                        </button>
-                        <button class="gender-btn p-3 rounded-xl border-2 dark:text-gray-300 dark:border-gray-700 hover:border-primary-500 transition-all flex flex-col items-center" data-type="user" data-val="female">
-                            <i data-feather="user"></i> <span class="text-xs mt-1">Жен.</span>
-                        </button>
-                        <button class="gender-btn p-3 rounded-xl border-2 dark:text-gray-300 dark:border-gray-700 hover:border-primary-500 transition-all flex flex-col items-center" data-type="user" data-val="other">
-                            <i data-feather="user-plus"></i> <span class="text-xs mt-1">Другой</span>
-                        </button>
-                    </div>
-                    <select id="userAge" class="w-full p-3 rounded-xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none focus:border-primary-500">
-                        <option value="" disabled selected>Ваш возраст</option>
-                        <option value="under14">До 14</option>
-                        <option value="15-17">15 - 17</option>
-                        <option value="18plus">18+</option>
-                    </select>
-                </div>
+        <div id="setupForm" class="flex-1 flex flex-col p-6 overflow-y-auto space-y-8 pb-24">
+            <div class="text-center space-y-2 py-6">
+                <h1 class="text-4xl font-black bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">Flip Chat</h1>
+                <p class="text-gray-400 font-medium">Найди свою половинку ✨</p>
+            </div>
 
-                <div class="space-y-4">
-                    <h2 class="text-xl font-semibold border-b pb-2 dark:text-white">Искать кого?</h2>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button class="gender-btn p-3 rounded-xl border-2 dark:text-gray-300 dark:border-gray-700 hover:border-secondary-500 transition-all flex flex-col items-center" data-type="comp" data-val="male">
-                            <i data-feather="user"></i> <span class="text-xs mt-1">Муж.</span>
-                        </button>
-                        <button class="gender-btn p-3 rounded-xl border-2 dark:text-gray-300 dark:border-gray-700 hover:border-secondary-500 transition-all flex flex-col items-center" data-type="comp" data-val="female">
-                            <i data-feather="user"></i> <span class="text-xs mt-1">Жен.</span>
-                        </button>
-                        <button class="gender-btn p-3 rounded-xl border-2 dark:text-gray-300 dark:border-gray-700 hover:border-secondary-500 transition-all flex flex-col items-center" data-type="comp" data-val="any">
-                            <i data-feather="users"></i> <span class="text-xs mt-1">Любой</span>
-                        </button>
-                    </div>
-                    <select id="compAge" class="w-full p-3 rounded-xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none focus:border-secondary-500">
-                        <option value="" disabled selected>Возраст собеседника</option>
-                        <option value="under14">До 14</option>
-                        <option value="15-17">15 - 17</option>
-                        <option value="18plus">18+</option>
-                    </select>
+            <div class="space-y-4">
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest px-1">Ваш пол</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="gender-option p-6 rounded-2xl border-2 border-gray-100 dark:border-gray-800 flex flex-col items-center gap-3 transition-all" data-gender="male">
+                        <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
+                            <i data-feather="user" class="text-blue-500"></i>
+                        </div>
+                        <span class="font-bold">Парень</span>
+                    </button>
+                    <button class="gender-option p-6 rounded-2xl border-2 border-gray-100 dark:border-gray-800 flex flex-col items-center gap-3 transition-all" data-gender="female">
+                        <div class="w-12 h-12 bg-pink-50 dark:bg-pink-900/20 rounded-full flex items-center justify-center">
+                            <i data-feather="user" class="text-pink-500"></i>
+                        </div>
+                        <span class="font-bold">Девушка</span>
+                    </button>
                 </div>
             </div>
 
-            <div class="mt-8 flex justify-center gap-4">
-                <button onclick="setTheme('light')" class="p-4 rounded-full border-2 hover:bg-white transition-all"><i data-feather="sun" class="text-yellow-500"></i></button>
-                <button onclick="setTheme('dark')" class="p-4 rounded-full border-2 hover:bg-gray-800 transition-all"><i data-feather="moon" class="text-purple-400"></i></button>
+            <div class="space-y-4">
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest px-1">Ваш возраст</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button class="age-group px-6 py-3 rounded-xl border-2 border-gray-100 dark:border-gray-800 font-bold transition-all" data-age="under14">До 14</button>
+                    <button class="age-group px-6 py-3 rounded-xl border-2 border-gray-100 dark:border-gray-800 font-bold transition-all" data-age="15-17">15-17</button>
+                    <button class="age-group px-6 py-3 rounded-xl border-2 border-gray-100 dark:border-gray-800 font-bold transition-all" data-age="18plus">18+</button>
+                </div>
             </div>
 
-            <button id="startChatBtn" class="w-full max-w-xs mx-auto block mt-8 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-bold py-4 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95 transition-all">
-                Начать общение
+            <div class="p-6 bg-white dark:bg-gray-900 rounded-3xl shadow-sm space-y-6">
+                <h3 class="text-center font-bold text-gray-500 uppercase text-xs tracking-tighter">Кого найти?</h3>
+                <div class="grid grid-cols-3 gap-2">
+                    <button class="comp-gender-option p-3 rounded-xl border-2 border-gray-50 dark:border-gray-800 flex flex-col items-center" data-gender="male">
+                        <i data-feather="user" class="w-5 h-5 text-blue-500 mb-1"></i>
+                        <span class="text-[10px] font-bold">Парня</span>
+                    </button>
+                    <button class="comp-gender-option p-3 rounded-xl border-2 border-gray-50 dark:border-gray-800 flex flex-col items-center" data-gender="female">
+                        <i data-feather="user" class="w-5 h-5 text-pink-500 mb-1"></i>
+                        <span class="text-[10px] font-bold">Девушку</span>
+                    </button>
+                    <button class="comp-gender-option p-3 rounded-xl border-2 border-gray-50 dark:border-gray-800 flex flex-col items-center" data-gender="any">
+                        <i data-feather="users" class="w-5 h-5 text-purple-500 mb-1"></i>
+                        <span class="text-[10px] font-bold">Любого</span>
+                    </button>
+                </div>
+            </div>
+
+            <button id="startChatBtn" class="w-full py-5 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-black text-lg shadow-xl shadow-primary-500/20 disabled:opacity-30 transform active:scale-95 transition-all">
+                НАЧАТЬ ПОИСК
             </button>
         </div>
 
-        <div id="waitingScreen" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-white dark:bg-gray-900 p-6 text-center">
-            <div class="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-            <h2 class="text-2xl font-bold dark:text-white">Ищем собеседника...</h2>
-            <button id="cancelSearchBtn" class="mt-6 text-gray-500 underline">Отмена</button>
+        <div id="waitingScreen" class="hidden absolute inset-0 z-50 bg-white dark:bg-gray-950 flex flex-col items-center justify-center p-8">
+            <div class="relative w-24 h-24 mb-6">
+                <div class="absolute inset-0 border-4 border-primary-500 rounded-full animate-ping opacity-25"></div>
+                <div class="absolute inset-0 border-4 border-primary-600 rounded-full animate-spin border-t-transparent"></div>
+            </div>
+            <h2 class="text-xl font-bold">Ищем собеседника...</h2>
+            <button onclick="location.reload()" class="mt-8 text-gray-400 font-bold">ОТМЕНА</button>
         </div>
 
-        <div id="chatInterface" class="hidden h-full flex flex-col">
-            <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50">
+        <div id="chatInterface" class="hidden flex-1 flex flex-col h-full overflow-hidden bg-white dark:bg-gray-950">
+            <div class="p-4 border-b dark:border-gray-800 flex justify-between items-center glass-effect sticky top-0 z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500"></div>
+                    <div>
+                        <p class="font-bold text-sm">Анонимный чат</p>
+                        <p id="chatStatus" class="text-[10px] text-green-500 font-bold">В сети</p>
+                    </div>
                 </div>
-            
-            <div class="p-4 bg-white dark:bg-gray-900 border-t dark:border-gray-800">
-                <div id="typingIndicator" class="text-xs text-gray-400 mb-1 h-4 px-2"></div>
-                <div class="flex gap-2">
-                    <input type="text" id="messageInput" placeholder="Ваше сообщение..." class="flex-1 p-3 rounded-full border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-primary-500">
-                    <button id="sendMessageBtn" class="bg-primary-500 text-white p-3 rounded-full hover:bg-primary-600 transition-all">
+                <button onclick="location.reload()" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-full text-red-500"><i data-feather="x"></i></button>
+            </div>
+
+            <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-4">
+                </div>
+
+            <div class="p-4 border-t dark:border-gray-800 bg-white dark:bg-gray-900 shrink-0">
+                <div class="flex items-center gap-2">
+                    <input type="text" id="messageInput" placeholder="Напиши что-нибудь..." class="flex-1 p-4 bg-gray-100 dark:bg-gray-800 rounded-2xl outline-none focus:ring-2 focus:ring-primary-500">
+                    <button id="sendBtn" class="w-14 h-14 bg-primary-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/30">
                         <i data-feather="send"></i>
-                    </button>
-                    <button id="leaveBtn" class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full hover:bg-red-500 hover:text-white transition-all">
-                        <i data-feather="log-out"></i>
                     </button>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    feather.replace();
-    
-    let connection = null;
-    let userData = { gender: null, age: null, compGender: null, compAge: null };
+    <script>
+        feather.replace();
+        let connection = null;
+        let userData = { gender: null, age: null, compGender: null, compAge: 'any' };
 
-    // Инициализация Telegram
-    if (window.Telegram?.WebApp) {
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready();
-    }
+        // Логика выбора опций (идентично вашему файлу)
+        function initToggles() {
+            const setupSelect = (selector, key) => {
+                document.querySelectorAll(selector).forEach(btn => {
+                    btn.onclick = () => {
+                        document.querySelectorAll(selector).forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        userData[key] = btn.dataset.gender || btn.dataset.age;
+                        if (window.Telegram?.WebApp) Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+                    };
+                });
+            };
 
-    // Выбор пола
-    document.querySelectorAll('.gender-btn').forEach(btn => {
-        btn.onclick = (e) => {
-            const type = btn.dataset.type;
-            document.querySelectorAll(`.gender-btn[data-type="${type}"]`).forEach(b => b.classList.remove('selected', 'bg-primary-100', 'dark:bg-primary-900/30'));
-            btn.classList.add('selected', 'bg-primary-100', 'dark:bg-primary-900/30');
-            if(type === 'user') userData.gender = btn.dataset.val;
-            else userData.compGender = btn.dataset.val;
-            checkForm();
-        };
-    });
-
-    // Изменение возраста
-    document.getElementById('userAge').onchange = (e) => { userData.age = e.target.value; checkForm(); };
-    document.getElementById('compAge').onchange = (e) => { userData.compAge = e.target.value; checkForm(); };
-
-    function checkForm() {
-        document.getElementById('startChatBtn').disabled = !(userData.gender && userData.age && userData.compGender && userData.compAge);
-    }
-
-    function setTheme(mode) {
-        document.documentElement.classList.toggle('dark', mode === 'dark');
-    }
-
-    // SignalR логика
-    async function startConnection() {
-        const url = `${window.location.protocol}//${window.location.host}/chat`;
-        connection = new signalR.HubConnectionBuilder()
-            .withUrl(url)
-            .withAutomaticReconnect()
-            .build();
-
-        connection.on("ReceiveMessage", (msg) => addMessage(msg.text, false));
-        connection.on("MatchFound", (companion) => {
-            document.getElementById('waitingScreen').classList.add('hidden');
-            document.getElementById('chatInterface').classList.remove('hidden');
-            addSystemMessage("Собеседник найден! Поприветствуйте его.");
-        });
-        connection.on("UserLeft", () => {
-            addSystemMessage("Собеседник покинул чат.");
-            setTimeout(() => location.reload(), 2000);
-        });
-        
-        connection.on("TypingStatus", (isTyping) => {
-            document.getElementById('typingIndicator').textContent = isTyping ? "Собеседник печатает..." : "";
-        });
-
-        try {
-            await connection.start();
-            document.getElementById('statusText').textContent = "Онлайн";
-            document.getElementById('statusText').className = "text-green-400";
-        } catch (err) {
-            document.getElementById('statusText').textContent = "Ошибка связи";
-            console.error(err);
+            setupSelect('.gender-option', 'gender');
+            setupSelect('.age-group', 'age');
+            setupSelect('.comp-gender-option', 'compGender');
         }
-    }
 
-    document.getElementById('startChatBtn').onclick = () => {
-        document.getElementById('setupForm').classList.add('hidden');
-        document.getElementById('waitingScreen').classList.remove('hidden');
-        connection.invoke("JoinChat", {
-            Gender: userData.gender,
-            Age: userData.age,
-            CompanionGender: userData.compGender,
-            CompanionAge: userData.compAge
-        });
-    };
+        async function startSignalR() {
+            // Динамический URL (Railway-совместимый)
+            const hubUrl = `${window.location.protocol}//${window.location.host}/chat`;
+            
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl(hubUrl)
+                .withAutomaticReconnect()
+                .build();
 
-    function addMessage(text, isOwn) {
-        const cont = document.getElementById('messagesContainer');
-        const div = document.createElement('div');
-        div.className = `flex ${isOwn ? 'justify-end' : 'justify-start'} chat-message`;
-        div.innerHTML = `
-            <div class="max-w-[80%] p-3 rounded-2xl ${isOwn ? 'bg-primary-500 text-white rounded-tr-none' : 'bg-white dark:bg-gray-700 dark:text-white rounded-tl-none'} shadow-sm">
-                ${text}
-            </div>
-        `;
-        cont.appendChild(div);
-        cont.scrollTo({ top: cont.scrollHeight, behavior: 'smooth' });
-    }
+            connection.on("ReceiveMessage", (msg) => appendMessage(msg.text, false));
+            connection.on("MatchFound", () => {
+                document.getElementById('waitingScreen').classList.add('hidden');
+                document.getElementById('chatInterface').classList.remove('hidden');
+            });
 
-    function addSystemMessage(text) {
-        const cont = document.getElementById('messagesContainer');
-        const div = document.createElement('div');
-        div.className = "flex justify-center chat-message";
-        div.innerHTML = `<div class="bg-gray-200 dark:bg-gray-800 text-gray-500 text-[10px] px-3 py-1 rounded-full uppercase tracking-widest font-bold">${text}</div>`;
-        cont.appendChild(div);
-    }
+            try { await connection.start(); } catch (err) { console.error(err); }
+        }
 
-    document.getElementById('sendMessageBtn').onclick = () => {
-        const inp = document.getElementById('messageInput');
-        if(!inp.value.trim()) return;
-        connection.invoke("SendMessage", inp.value);
-        addMessage(inp.value, true);
-        inp.value = "";
-    };
+        function appendMessage(text, isOwn) {
+            const container = document.getElementById('messagesContainer');
+            const div = document.createElement('div');
+            div.className = `flex ${isOwn ? 'justify-end' : 'justify-start'}`;
+            div.innerHTML = `
+                <div class="max-w-[85%] p-4 rounded-2xl shadow-sm text-sm ${
+                    isOwn ? 'chat-bubble-own text-white' : 'chat-bubble-other bg-gray-100 dark:bg-gray-800 dark:text-gray-100'
+                }">
+                    ${text}
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+        }
 
-    // Передача статуса печати
-    let typingTimer;
-    document.getElementById('messageInput').oninput = () => {
-        clearTimeout(typingTimer);
-        connection.invoke("Typing", true);
-        typingTimer = setTimeout(() => connection.invoke("Typing", false), 2000);
-    };
+        document.getElementById('startChatBtn').onclick = () => {
+            if(!userData.gender || !userData.age || !userData.compGender) return alert("Выбери все параметры!");
+            document.getElementById('setupForm').classList.add('hidden');
+            document.getElementById('waitingScreen').classList.remove('hidden');
+            
+            connection.invoke("JoinChat", {
+                Gender: userData.gender,
+                Age: userData.age,
+                CompanionGender: userData.compGender,
+                CompanionAge: userData.compAge
+            });
+        };
 
-    document.getElementById('leaveBtn').onclick = () => location.reload();
-    document.getElementById('cancelSearchBtn').onclick = () => location.reload();
+        document.getElementById('sendBtn').onclick = () => {
+            const input = document.getElementById('messageInput');
+            if(!input.value.trim()) return;
+            connection.invoke("SendMessage", input.value);
+            appendMessage(input.value, true);
+            input.value = "";
+        };
 
-    startConnection();
-</script>
+        initToggles();
+        startSignalR();
+        if (window.Telegram?.WebApp) Telegram.WebApp.expand();
+    </script>
 </body>
 </html>
