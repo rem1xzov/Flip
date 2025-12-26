@@ -40,7 +40,9 @@ builder.Services.AddCors(options =>
                 try
                 {
                     var uri = new Uri(origin);
-                    return uri.Host == "localhost" || uri.Host == "127.0.0.1";
+                    return uri.Host == "localhost" ||
+                        uri.Host == "127.0.0.1" ||
+                        uri.Host == "flip-production-fbe1.up.railway.app";
                 }
                 catch
                 {
