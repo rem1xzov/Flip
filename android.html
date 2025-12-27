@@ -138,7 +138,7 @@
       50% { opacity: 0.5; }
     }
 
-    /* ТОЛЬКО адаптация для мобильных - ничего не меняем кроме размеров */
+    /* СТИЛИ ДЛЯ МОБИЛЬНОГО СКРОЛЛА */
     @media (max-width: 768px) {
       body {
         padding: 0 !important;
@@ -167,29 +167,68 @@
         gap: 20px !important;
       }
 
-      /* ФИКС СКРОЛЛА ДЛЯ АНДРОИДА: ПРОСТО И РАБОЧЕЕ */
+      /* УЛУЧШЕННЫЙ СКРОЛЛ ДЛЯ МОБИЛЬНЫХ */
       #messagesContainer {
-        height: calc(100vh - 180px) !important;
-        padding: 15px !important;
+        flex: 1;
+        height: auto !important;
+        min-height: 0;
+        max-height: none !important;
         overflow-y: scroll !important;
-        -webkit-overflow-scrolling: touch !important;
+        scroll-behavior: smooth;
+        overscroll-behavior-y: contain;
+        padding: 15px !important;
+        padding-bottom: 120px !important;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        -webkit-overflow-scrolling: auto;
+      }
+
+      /* Стилизация скроллбара */
+      #messagesContainer {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(124, 58, 237, 0.4) transparent;
       }
 
       #messagesContainer::-webkit-scrollbar {
-        width: 4px;
+        width: 6px;
+        height: 6px;
       }
 
       #messagesContainer::-webkit-scrollbar-track {
         background: transparent;
+        border-radius: 3px;
       }
 
       #messagesContainer::-webkit-scrollbar-thumb {
-        background: #7c3aed;
-        border-radius: 2px;
+        background: rgba(124, 58, 237, 0.4);
+        border-radius: 3px;
+        transition: background 0.3s ease;
+      }
+
+      #messagesContainer::-webkit-scrollbar-thumb:hover {
+        background: rgba(124, 58, 237, 0.6);
+      }
+
+      /* Тёмная тема для скроллбара */
+      [data-theme="dark"] #messagesContainer {
+        scrollbar-color: rgba(109, 40, 217, 0.5) transparent;
       }
 
       [data-theme="dark"] #messagesContainer::-webkit-scrollbar-thumb {
-        background: #6d28d9;
+        background: rgba(109, 40, 217, 0.5);
+      }
+
+      [data-theme="dark"] #messagesContainer::-webkit-scrollbar-thumb:hover {
+        background: rgba(109, 40, 217, 0.7);
+      }
+
+      /* Фиксируем структуру чата */
+      #chatInterface {
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100vh !important;
+        overflow: hidden !important;
       }
 
       /* Увеличиваем кнопки для нажатия пальцем */
@@ -237,11 +276,6 @@
         border-color: #374151;
       }
 
-      /* Добавляем отступ для сообщений чтобы не перекрывалось поле ввода */
-      #messagesContainer {
-        padding-bottom: 100px !important;
-      }
-
       /* Увеличиваем поле ввода */
       #messageInput {
         font-size: 16px !important;
@@ -265,6 +299,12 @@
       .theme-selector {
         width: 80px !important;
         height: 80px !important;
+      }
+
+      #messagesContainer {
+        padding: 10px !important;
+        padding-bottom: 110px !important;
+        gap: 10px;
       }
     }
 
@@ -306,7 +346,6 @@
         padding: 0.75rem !important;
         flex: 1;
         overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch;
         height: auto;
       }
 
@@ -403,9 +442,8 @@
       }
 
       #messagesContainer {
-        height: calc(100vh - 140px) !important;
         padding: 0.5rem !important;
-        padding-bottom: 100px !important;
+        padding-bottom: 140px !important;
       }
 
       #messageInput {
@@ -476,13 +514,23 @@
         padding: 0.5rem 0.75rem !important;
         font-size: 0.75rem !important;
       }
+
+      #messagesContainer {
+        padding-bottom: 130px !important;
+      }
     }
 
     /* Горизонтальная ориентация - используем стандартные стили */
     @media (max-width: 768px) and (orientation: landscape) {
       #messagesContainer {
-        height: calc(100vh - 120px) !important;
         padding-bottom: 100px !important;
+      }
+    }
+
+    /* ФИКС ДЛЯ IOS: предотвращаем "залипание" скролла */
+    @supports (-webkit-touch-callout: none) {
+      #messagesContainer {
+        padding-bottom: 140px !important;
       }
     }
   </style>
@@ -877,10 +925,12 @@
     }
   }
 
-  // ФИКС: Простая функция для скролла вниз
+  // ФИКС: Улучшенная функция для скролла вниз
   function scrollToBottom() {
     if (messagesContainer) {
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      requestAnimationFrame(() => {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      });
     }
   }
 
@@ -1170,6 +1220,36 @@
     startChatBtn.disabled = false;
   });
 
+  // Функция для улучшения скролла на iOS
+  function improveMobileScroll() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    if (isIOS && messagesContainer) {
+      // Обработчик для предотвращения скролла страницы при скролле чата
+      let startY;
+
+      messagesContainer.addEventListener('touchstart', function(e) {
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+
+      messagesContainer.addEventListener('touchmove', function(e) {
+        const deltaY = e.touches[0].clientY - startY;
+        const isScrollingUp = deltaY > 0;
+        const isAtTop = messagesContainer.scrollTop === 0;
+        const isAtBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop === messagesContainer.clientHeight;
+
+        // Если мы вверху и скроллим вверх, или внизу и скроллим вниз, 
+        // позволяем скроллить родительскую страницу
+        if ((isAtTop && isScrollingUp) || (isAtBottom && !isScrollingUp)) {
+          return true;
+        }
+
+        // Иначе останавливаем распространение события
+        e.stopPropagation();
+      }, { passive: false });
+    }
+  }
+
   // Инициализация при загрузке страницы
   document.addEventListener('DOMContentLoaded', function() {
     loadUserData();
@@ -1200,14 +1280,30 @@
     initializeSignalR();
     sendMessageBtn.disabled = true;
 
-    // ДОБАВЛЕНО: Гарантируем, что при загрузке показывается форма настроек
+    // Гарантируем, что при загрузке показывается форма настроек
     setTimeout(() => {
       if (!isInChat && !isJoiningChat) {
         showSetupForm();
       }
     }, 50);
 
-    // ДОБАВЛЕНО: Очистим localStorage для тестирования
+    // Улучшаем скролл для мобильных
+    setTimeout(improveMobileScroll, 1000);
+
+    // Автоматический скролл при фокусе на поле ввода
+    messageInput.addEventListener('focus', function() {
+      setTimeout(scrollToBottom, 300);
+    });
+
+    // Скролл при тапе по чату
+    messagesContainer.addEventListener('click', function() {
+      messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        behavior: 'smooth'
+      });
+    });
+
+    // Очистка localStorage для тестирования (раскомментировать при необходимости)
     // localStorage.removeItem('flipchat:userData');
   });
 </script>
