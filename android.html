@@ -1,368 +1,1215 @@
 <!DOCTYPE html>
-<html lang="ru" class="h-full">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Flip Chat</title>
-    
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: { 500: '#7c3aed', 600: '#6d28d9' },
-                        secondary: { 500: '#ec4899', 600: '#db2777' }
-                    },
-                    borderRadius: { 'xl': '1rem', '2xl': '2rem' }
-                }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flip Chat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <!-- SignalR JavaScript Client -->
+  <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              500: '#7c3aed',
+              600: '#6d28d9',
+            },
+            secondary: {
+              500: '#ec4899',
+              600: '#db2777',
             }
+          },
+          borderRadius: {
+            'xl': '1rem',
+            '2xl': '2rem',
+          }
         }
-    </script>
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            overflow: hidden; 
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-color: #f9fafb; /* Светлый фон по умолчанию */
-        }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    /* Dark theme overrides */
+    [data-theme="dark"] body {
+      background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+      color: #e5e7eb;
+    }
+    [data-theme="dark"] .glass-effect {
+      background: rgba(17, 24, 39, 0.85);
+      border-color: rgba(255,255,255,0.08);
+    }
+    [data-theme="dark"] .btn-primary {
+      background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+      box-shadow: 0 4px 15px rgba(109, 40, 217, 0.35);
+    }
+    [data-theme="dark"] input#messageInput {
+      background-color: #111827;
+      color: #e5e7eb;
+      border-color: #374151;
+    }
+    [data-theme="dark"] .border-gray-200 { border-color: #374151 !important; }
+    [data-theme="dark"] .text-gray-800 { color: #e5e7eb !important; }
+    [data-theme="dark"] .text-gray-600 { color: #d1d5db !important; }
+    [data-theme="dark"] .bg-gray-200 { background-color: #1f2937 !important; }
+    [data-theme="dark"] #messagesContainer .chat-message div { background-color: #1f2937 !important; color: #e5e7eb !important; }
+    [data-theme="dark"] .bg-white\/20 { background-color: rgba(255,255,255,0.12) !important; }
+    [data-theme="dark"] .hover\:bg-white\/30:hover { background-color: rgba(255,255,255,0.2) !important; }
+    [data-theme="dark"] .age-group.selected { background-color: #111827; }
+    [data-theme="dark"] .comp-age-group.selected { background-color: #111827; }
+    .age-group:hover .age-check {
+      opacity: 1;
+    }
+    .age-check {
+      transition: all 0.3s ease;
+    }
+    .theme-selector {
+      transition: all 0.3s ease;
+    }
+    .theme-selector:hover {
+      transform: scale(1.05);
+    }
+    .selected {
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.5);
+    }
+    .gender-option.selected {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      color: white;
+      border-color: #7c3aed;
+    }
+    .comp-gender-option.selected {
+      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+      color: white;
+      border-color: #ec4899;
+    }
+    .age-group.selected {
+      border-color: #7c3aed;
+      background-color: #f3f0ff;
+    }
+    .comp-age-group.selected {
+      border-color: #ec4899;
+      background-color: #fdf2f8;
+    }
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+    }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .chat-message {
+      animation: slideIn 0.3s ease-out;
+    }
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .status-indicator {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
 
-        .dark body {
-            background-color: #030712; /* Темный фон */
-        }
+    /* ТОЛЬКО адаптация для мобильных - ничего не меняем кроме размеров */
+    @media (max-width: 768px) {
+      body {
+        padding: 0 !important;
+        margin: 0 !important;
+        height: 100vh;
+        overflow: hidden;
+      }
 
-        /* Убираем синее выделение при тапе на мобильных */
-        button {
-            outline: none !important;
-            -webkit-tap-highlight-color: transparent;
-        }
+      body > div.max-w-4xl {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        border: none !important;
+      }
 
-        /* Стили активных кнопок */
-        .gender-option.active, .comp-gender-option.active, .age-group.active, .comp-age-group.active {
-            border-color: #7c3aed;
-            background-color: rgba(124, 58, 237, 0.05);
-            transform: scale(0.98);
-            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.1);
-        }
+      #setupForm, #waitingScreen {
+        padding: 20px !important;
+        height: 100%;
+        overflow-y: auto;
+      }
 
-        .dark .gender-option.active {
-            background-color: rgba(124, 58, 237, 0.15);
-        }
+      .grid.md\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
 
-        /* Сообщения */
-        .chat-bubble-own {
-            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
-            border-bottom-right-radius: 4px;
-            color: white;
-        }
-        
-        .chat-bubble-other {
-            background-color: #f3f4f6;
-            color: #1f2937;
-            border-bottom-left-radius: 4px;
-        }
+      /* ФИКС СКРОЛЛА ДЛЯ АНДРОИДА: ПРОСТО И РАБОЧЕЕ */
+      #messagesContainer {
+        height: calc(100vh - 180px) !important;
+        padding: 15px !important;
+        overflow-y: scroll !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
 
-        .dark .chat-bubble-other {
-            background-color: #1f2937;
-            color: #f3f4f6;
-        }
+      #messagesContainer::-webkit-scrollbar {
+        width: 4px;
+      }
 
-        /* Скролл */
-        #messagesContainer::-webkit-scrollbar { width: 4px; }
-        #messagesContainer::-webkit-scrollbar-thumb { background: rgba(124, 58, 237, 0.2); border-radius: 10px; }
-    </style>
+      #messagesContainer::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      #messagesContainer::-webkit-scrollbar-thumb {
+        background: #7c3aed;
+        border-radius: 2px;
+      }
+
+      [data-theme="dark"] #messagesContainer::-webkit-scrollbar-thumb {
+        background: #6d28d9;
+      }
+
+      /* Увеличиваем кнопки для нажатия пальцем */
+      button, .gender-option, .comp-gender-option {
+        min-height: 44px !important;
+        min-width: 44px !important;
+      }
+
+      .gender-option, .comp-gender-option {
+        padding: 15px !important;
+        font-size: 14px !important;
+      }
+
+      .age-group, .comp-age-group {
+        padding: 15px !important;
+        margin-bottom: 10px !important;
+      }
+
+      .theme-selector {
+        width: 100px !important;
+        height: 100px !important;
+      }
+
+      .w-28 { width: 100px !important; }
+      .h-28 { height: 100px !important; }
+
+      /* Уменьшаем немного шрифты */
+      h1 { font-size: 2rem !important; }
+      h2 { font-size: 1.25rem !important; }
+      .text-lg { font-size: 1rem !important; }
+
+      /* Фиксируем поле ввода внизу на мобильных */
+      .border-t.border-gray-200 {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 15px !important;
+        z-index: 100;
+      }
+
+      [data-theme="dark"] .border-t.border-gray-200 {
+        background: #111827;
+        border-color: #374151;
+      }
+
+      /* Добавляем отступ для сообщений чтобы не перекрывалось поле ввода */
+      #messagesContainer {
+        padding-bottom: 100px !important;
+      }
+
+      /* Увеличиваем поле ввода */
+      #messageInput {
+        font-size: 16px !important;
+        height: 50px !important;
+      }
+
+      #sendMessageBtn {
+        min-width: 50px !important;
+        min-height: 50px !important;
+        padding: 15px !important;
+      }
+    }
+
+    /* Для очень маленьких экранов */
+    @media (max-width: 375px) {
+      .gender-option, .comp-gender-option {
+        padding: 12px !important;
+        font-size: 12px !important;
+      }
+
+      .theme-selector {
+        width: 80px !important;
+        height: 80px !important;
+      }
+    }
+
+    /* Мобильная адаптация для вертикальной ориентации */
+    @media (max-width: 768px) and (orientation: portrait) {
+      body {
+        padding: 0 !important;
+        margin: 0 !important;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      body > div.max-w-4xl {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        border: none !important;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Уменьшаем заголовок */
+      .bg-gradient-to-r.from-primary-500.to-secondary-500.p-8 {
+        padding: 0.75rem !important;
+      }
+
+      h1.text-4xl {
+        font-size: 1.5rem !important;
+      }
+
+      .text-lg {
+        font-size: 0.8rem !important;
+      }
+
+      /* Делаем форму настроек прокручиваемой */
+      #setupForm {
+        padding: 0.75rem !important;
+        flex: 1;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        height: auto;
+      }
+
+      /* Одна колонка для мобильных */
+      .grid.md\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+      }
+
+      /* Уменьшаем заголовки секций */
+      h2.text-2xl {
+        font-size: 1rem !important;
+        margin-bottom: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+      }
+
+      /* Уменьшаем кнопки выбора пола */
+      .gender-option, .comp-gender-option {
+        padding: 0.5rem 0.25rem !important;
+        font-size: 0.7rem !important;
+        min-height: 50px !important;
+      }
+
+      .gender-option i, .comp-gender-option i {
+        width: 1rem !important;
+        height: 1rem !important;
+        margin-bottom: 0.25rem !important;
+      }
+
+      /* Уменьшаем блоки возраста */
+      .age-group, .comp-age-group {
+        padding: 0.5rem !important;
+        margin-bottom: 0.25rem !important;
+        font-size: 0.8rem !important;
+      }
+
+      .age-check {
+        width: 1rem !important;
+        height: 1rem !important;
+      }
+
+      .age-check i {
+        width: 0.75rem !important;
+        height: 0.75rem !important;
+      }
+
+      /* Уменьшаем выбор темы */
+      .mt-12 {
+        margin-top: 1rem !important;
+      }
+
+      .theme-selector {
+        width: 70px !important;
+        height: 70px !important;
+      }
+
+      .theme-selector .w-20, .theme-selector .h-20 {
+        width: 40px !important;
+        height: 40px !important;
+      }
+
+      .theme-selector i {
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+      }
+
+      /* Уменьшаем кнопку "Начать общение" */
+      .mt-16 {
+        margin-top: 1rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+
+      #startChatBtn {
+        padding: 0.6rem 1rem !important;
+        font-size: 0.8rem !important;
+        width: 100% !important;
+        max-width: 250px !important;
+        margin: 0 auto !important;
+      }
+
+      #startChatBtn i {
+        width: 1rem !important;
+        height: 1rem !important;
+        margin-left: 0.25rem !important;
+      }
+
+      /* Чат интерфейс для вертикальной ориентации */
+      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 {
+        padding: 0.5rem 0.75rem !important;
+      }
+
+      #chatInterface h2 {
+        font-size: 0.9rem !important;
+      }
+
+      #messagesContainer {
+        height: calc(100vh - 140px) !important;
+        padding: 0.5rem !important;
+        padding-bottom: 100px !important;
+      }
+
+      #messageInput {
+        font-size: 16px !important;
+        height: 40px !important;
+        padding: 0.5rem 0.75rem !important;
+      }
+
+      #sendMessageBtn {
+        min-width: 40px !important;
+        min-height: 40px !important;
+        padding: 0 !important;
+      }
+
+      #sendMessageBtn i {
+        width: 1rem !important;
+        height: 1rem !important;
+      }
+
+      /* Уменьшаем отступы в секциях */
+      .space-y-8 > * + * {
+        margin-top: 0.75rem !important;
+      }
+
+      /* Уменьшаем текст подсказок */
+      .block.text-sm {
+        font-size: 0.75rem !important;
+        margin-bottom: 0.25rem !important;
+      }
+
+      /* Уменьшаем все отступы в форме */
+      #setupForm > * {
+        margin-top: 0.5rem !important;
+      }
+
+      /* Уменьшаем отступы между колонками */
+      .gap-10 {
+        gap: 0.75rem !important;
+      }
+    }
+
+    /* Для очень маленьких экранов в вертикальной ориентации */
+    @media (max-width: 375px) and (orientation: portrait) {
+      #setupForm {
+        padding: 0.5rem !important;
+      }
+
+      .gender-option, .comp-gender-option {
+        padding: 0.4rem 0.2rem !important;
+        font-size: 0.65rem !important;
+      }
+
+      .theme-selector {
+        width: 60px !important;
+        height: 60px !important;
+      }
+
+      .theme-selector .w-20, .theme-selector .h-20 {
+        width: 35px !important;
+        height: 35px !important;
+      }
+
+      h1.text-4xl {
+        font-size: 1.25rem !important;
+      }
+
+      #startChatBtn {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.75rem !important;
+      }
+    }
+
+    /* Горизонтальная ориентация - используем стандартные стили */
+    @media (max-width: 768px) and (orientation: landscape) {
+      #messagesContainer {
+        height: calc(100vh - 120px) !important;
+        padding-bottom: 100px !important;
+      }
+    }
+  </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+<body class="h-full flex items-center justify-center p-4">
+<div class="max-w-4xl w-full glass-effect rounded-2xl shadow-2xl overflow-hidden border border-white/30">
+  <div class="bg-gradient-to-r from-primary-500 to-secondary-500 p-8 text-white text-center">
+    <h1 class="text-4xl font-bold">Flip Chat✨</h1>
+    <p class="text-lg mt-3 opacity-90">Наслаждайтесь общением!</p>
+    <div id="connectionStatus" class="mt-2 text-sm opacity-75">
+      <span id="statusText">Подключение...</span>
+    </div>
+  </div>
 
-    <div id="app" class="flex-1 flex flex-col h-full w-full max-w-lg mx-auto relative overflow-hidden">
-        
-        <div id="setupForm" class="flex-1 flex flex-col p-6 overflow-y-auto pb-24 z-20 bg-gray-50 dark:bg-gray-950 absolute inset-0">
-            <div class="text-center space-y-2 py-6 shrink-0">
-                <h1 class="text-4xl font-black bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">Flip Chat</h1>
-                <p class="text-gray-400 font-medium text-sm">Анонимный чат v2.0</p>
-            </div>
+  <!-- Setup Form -->
+  <div id="setupForm" class="p-10">
+    <div class="grid md:grid-cols-2 gap-10">
+      <!-- Your Profile Section -->
+      <div class="space-y-8">
+        <h2 class="text-2xl font-semibold text-gray-800 border-b-2 pb-3 border-primary-500/20">Ваши настройки</h2>
 
-            <div class="space-y-6 flex-1">
-                <div class="space-y-3">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Я</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button class="gender-option p-5 rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex flex-col items-center gap-2 transition-all" data-gender="male">
-                            <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
-                                <i data-feather="user" class="text-blue-500 w-5 h-5"></i>
-                            </div>
-                            <span class="font-bold text-sm">Парень</span>
-                        </button>
-                        <button class="gender-option p-5 rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex flex-col items-center gap-2 transition-all" data-gender="female">
-                            <div class="w-10 h-10 bg-pink-50 dark:bg-pink-900/20 rounded-full flex items-center justify-center">
-                                <i data-feather="user" class="text-pink-500 w-5 h-5"></i>
-                            </div>
-                            <span class="font-bold text-sm">Девушка</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Мой возраст</h3>
-                    <div class="flex gap-2">
-                        <button class="age-group flex-1 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 font-bold text-sm transition-all" data-age="under14">До 14</button>
-                        <button class="age-group flex-1 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 font-bold text-sm transition-all" data-age="15-17">15-17</button>
-                        <button class="age-group flex-1 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 font-bold text-sm transition-all" data-age="18plus">18+</button>
-                    </div>
-                </div>
-
-                <div class="p-5 bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 space-y-4">
-                    <h3 class="text-center font-bold text-gray-400 uppercase text-xs tracking-widest">Кого ищем?</h3>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button class="comp-gender-option p-3 rounded-xl border-2 border-gray-50 dark:border-gray-800 flex flex-col items-center transition-all hover:bg-gray-50 dark:hover:bg-gray-800" data-gender="male">
-                            <span class="text-[10px] font-bold mt-1">Парня</span>
-                        </button>
-                        <button class="comp-gender-option p-3 rounded-xl border-2 border-gray-50 dark:border-gray-800 flex flex-col items-center transition-all hover:bg-gray-50 dark:hover:bg-gray-800" data-gender="female">
-                            <span class="text-[10px] font-bold mt-1">Девушку</span>
-                        </button>
-                        <button class="comp-gender-option p-3 rounded-xl border-2 border-gray-50 dark:border-gray-800 flex flex-col items-center transition-all hover:bg-gray-50 dark:hover:bg-gray-800" data-gender="any">
-                            <span class="text-[10px] font-bold mt-1">Любого</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <button id="startChatBtn" class="w-full py-4 mt-6 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-black text-lg shadow-xl shadow-primary-500/20 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95 transition-all shrink-0">
-                ПОИСК
+        <!-- Gender Selection -->
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-3">Ваш пол</label>
+          <div class="grid grid-cols-3 gap-3">
+            <button class="gender-option py-4 px-4 rounded-full border-2 border-gray-200 hover:bg-gray-50 flex flex-col items-center justify-center transition-all hover:border-primary-500" data-gender="male">
+              <i data-feather="user" class="w-6 h-6 mb-2"></i>
+              <span>Муж.</span>
             </button>
+            <button class="gender-option py-4 px-4 rounded-full border-2 border-gray-200 hover:bg-gray-50 flex flex-col items-center justify-center transition-all hover:border-primary-500" data-gender="female">
+              <i data-feather="user" class="w-6 h-6 mb-2"></i>
+              <span>Жен.</span>
+            </button>
+            <button class="gender-option py-4 px-4 rounded-full border-2 border-gray-200 hover:bg-gray-50 flex flex-col items-center justify-center transition-all hover:border-primary-500" data-gender="other">
+              <i data-feather="user-plus" class="w-6 h-6 mb-2"></i>
+              <span>Другой</span>
+            </button>
+          </div>
         </div>
 
-        <div id="waitingScreen" class="hidden absolute inset-0 z-30 bg-white dark:bg-gray-950 flex flex-col items-center justify-center p-8">
-            <div class="relative w-20 h-20 mb-6">
-                <div class="absolute inset-0 border-4 border-primary-500 rounded-full animate-ping opacity-25"></div>
-                <div class="absolute inset-0 border-4 border-primary-600 rounded-full animate-spin border-t-transparent"></div>
+        <!-- Your Age Group -->
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-3">Ваш возраст</label>
+          <div class="space-y-3">
+            <div class="age-group relative p-5 rounded-xl border-2 border-gray-200 hover:bg-gray-50 cursor-pointer transition-all hover:border-primary-500" data-age="under14">
+              <div class="flex justify-between items-center">
+                <span class="font-medium">До 14</span>
+                <div class="age-check w-6 h-6 rounded-full border-2 border-gray-300 opacity-0 flex items-center justify-center">
+                  <i data-feather="check" class="w-4 h-4 opacity-0"></i>
+                </div>
+              </div>
             </div>
-            <h2 class="text-xl font-bold">Ищем пару...</h2>
-            <button onclick="resetApp()" class="mt-8 text-red-500 font-bold text-sm px-6 py-2 rounded-full border border-red-500/20">ОТМЕНА</button>
+            <div class="age-group relative p-5 rounded-xl border-2 border-gray-200 hover:bg-gray-50 cursor-pointer transition-all hover:border-primary-500" data-age="15-17">
+              <div class="flex justify-between items-center">
+                <span class="font-medium">15 - 17</span>
+                <div class="age-check w-6 h-6 rounded-full border-2 border-gray-300 opacity-0 flex items-center justify-center">
+                  <i data-feather="check" class="w-4 h-4 opacity-0"></i>
+                </div>
+              </div>
+            </div>
+            <div class="age-group relative p-5 rounded-xl border-2 border-gray-200 hover:bg-gray-50 cursor-pointer transition-all hover:border-primary-500" data-age="18plus">
+              <div class="flex justify-between items-center">
+                <span class="font-medium">18 и выше</span>
+                <div class="age-check w-6 h-6 rounded-full border-2 border-gray-300 opacity-0 flex items-center justify-center">
+                  <i data-feather="check" class="w-4 h-4 opacity-0"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Companion Preferences -->
+      <div class="space-y-8">
+        <h2 class="text-2xl font-semibold text-gray-800 border-b-2 pb-3 border-secondary-500/20">Настройки собеседника</h2>
+
+        <!-- Companion Gender -->
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-3">Пол собеседника</label>
+          <div class="grid grid-cols-3 gap-3">
+            <button class="comp-gender-option py-4 px-4 rounded-full border-2 border-gray-200 hover:bg-gray-50 flex flex-col items-center justify-center transition-all hover:border-secondary-500" data-gender="male">
+              <i data-feather="user" class="w-6 h-6 mb-2"></i>
+              <span>Муж.</span>
+            </button>
+            <button class="comp-gender-option py-4 px-4 rounded-full border-2 border-gray-200 hover:bg-gray-50 flex flex-col items-center justify-center transition-all hover:border-secondary-500" data-gender="female">
+              <i data-feather="user" class="w-6 h-6 mb-2"></i>
+              <span>Жен.</span>
+            </button>
+            <button class="comp-gender-option py-4 px-4 rounded-full border-2 border-gray-200 hover:bg-gray-50 flex flex-col items-center justify-center transition-all hover:border-secondary-500" data-gender="any">
+              <i data-feather="users" class="w-6 h-6 mb-2"></i>
+              <span>Любой</span>
+            </button>
+          </div>
         </div>
 
-        <div id="chatInterface" class="hidden absolute inset-0 z-40 flex flex-col bg-white dark:bg-gray-950 h-full w-full">
-            <div class="px-4 py-3 border-b dark:border-gray-800 flex justify-between items-center bg-white/90 dark:bg-gray-900/90 backdrop-blur-md sticky top-0 z-10 shadow-sm">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white shadow-md">
-                        <i data-feather="user" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <p class="font-bold text-sm leading-tight">Собеседник</p>
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                            <span id="chatStatus" class="text-[10px] text-gray-500 font-medium">Онлайн</span>
-                        </div>
-                    </div>
+        <!-- Companion Age Group -->
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-3">Возраст собеседника</label>
+          <div class="space-y-3">
+            <div class="comp-age-group relative p-5 rounded-xl border-2 border-gray-200 hover:bg-gray-50 cursor-pointer transition-all hover:border-secondary-500" data-age="under14">
+              <div class="flex justify-between items-center">
+                <span class="font-medium">До 14</span>
+                <div class="age-check w-6 h-6 rounded-full border-2 border-gray-300 opacity-0 flex items-center justify-center">
+                  <i data-feather="check" class="w-4 h-4 opacity-0"></i>
                 </div>
-                <button onclick="resetApp()" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                    <i data-feather="x" class="w-5 h-5"></i>
-                </button>
+              </div>
             </div>
-
-            <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-950 w-full">
+            <div class="comp-age-group relative p-5 rounded-xl border-2 border-gray-200 hover:bg-gray-50 cursor-pointer transition-all hover:border-secondary-500" data-age="15-17">
+              <div class="flex justify-between items-center">
+                <span class="font-medium">15 - 17</span>
+                <div class="age-check w-6 h-6 rounded-full border-2 border-gray-300 opacity-0 flex items-center justify-center">
+                  <i data-feather="check" class="w-4 h-4 opacity-0"></i>
                 </div>
-
-            <div class="p-3 border-t dark:border-gray-800 bg-white dark:bg-gray-900 shrink-0 w-full pb-safe">
-                <div class="flex items-center gap-2 max-w-full">
-                    <input type="text" id="messageInput" placeholder="Сообщение..." class="flex-1 py-3 px-4 bg-gray-100 dark:bg-gray-800 rounded-2xl outline-none focus:ring-2 focus:ring-primary-500 text-sm dark:text-white transition-all">
-                    <button id="sendBtn" class="w-12 h-12 bg-primary-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/30 active:scale-90 transition-transform">
-                        <i data-feather="send" class="w-5 h-5 ml-0.5"></i>
-                    </button>
-                </div>
+              </div>
             </div>
+            <div class="comp-age-group relative p-5 rounded-xl border-2 border-gray-200 hover:bg-gray-50 cursor-pointer transition-all hover:border-secondary-500" data-age="18plus">
+              <div class="flex justify-between items-center">
+                <span class="font-medium">18 и выше</span>
+                <div class="age-check w-6 h-6 rounded-full border-2 border-gray-300 opacity-0 flex items-center justify-center">
+                  <i data-feather="check" class="w-4 h-4 opacity-0"></i>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
-    <script>
-        // Инициализация иконок
-        feather.replace();
-        
-        let connection = null;
-        let userData = { gender: null, age: null, compGender: null, compAge: 'any' };
+    <!-- Theme Selection -->
+    <div class="mt-12">
+      <label class="block text-sm font-medium text-gray-600 mb-6 text-center">Выберите тему настройки чата</label>
+      <div class="flex justify-center space-x-8">
+        <div class="theme-selector w-28 h-28 rounded-2xl bg-white border-2 border-gray-200 flex items-center justify-center cursor-pointer hover:border-primary-500" data-theme="light">
+          <div class="w-20 h-20 bg-yellow-100 rounded-xl flex items-center justify-center">
+            <i data-feather="sun" class="w-8 h-8 text-yellow-500"></i>
+          </div>
+        </div>
+        <div class="theme-selector w-28 h-28 rounded-2xl bg-gray-800 border-2 border-gray-700 flex items-center justify-center cursor-pointer hover:border-secondary-500" data-theme="dark">
+          <div class="w-20 h-20 bg-gray-700 rounded-xl flex items-center justify-center">
+            <i data-feather="moon" class="w-8 h-8 text-purple-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        // 1. ФУНКЦИЯ ПОЛНОГО СБРОСА ПРИЛОЖЕНИЯ (ГЛАВНОЕ ИСПРАВЛЕНИЕ)
-        function resetApp() {
-            // Скрываем чат и ожидание, показываем форму
-            document.getElementById('setupForm').classList.remove('hidden');
-            document.getElementById('waitingScreen').classList.add('hidden');
-            document.getElementById('chatInterface').classList.add('hidden');
-            
-            // Очищаем сообщения
-            document.getElementById('messagesContainer').innerHTML = '';
-            
-            // Разрываем соединение если есть
-            if (connection) {
-                connection.stop().catch(err => console.error(err));
-            }
+    <!-- Start Chat Button -->
+    <div class="mt-16 text-center">
+      <button id="startChatBtn" class="btn-primary px-10 py-4 text-white font-semibold rounded-full transition-all duration-300" disabled>
+        Начинай общение! <i data-feather="arrow-right" class="ml-3 w-5 h-5 inline"></i>
+      </button>
+      <div id="validationError" class="mt-4 text-red-500 text-sm hidden"></div>
+    </div>
+  </div>
+
+  <!-- Chat Interface (Hidden by default) -->
+  <div id="chatInterface" class="hidden">
+    <div class="bg-gradient-to-r from-primary-500 to-secondary-500 p-6 text-white">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-xl font-bold">Чат с собеседником</h2>
+          <p id="companionInfo" class="text-sm opacity-90"></p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="newCompanionBtn" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-all text-sm">Новый собеседник</button>
+          <button id="leaveChatBtn" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-all">
+            <i data-feather="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="h-96 overflow-y-auto p-6 space-y-4" id="messagesContainer">
+      <!-- Messages will be added here -->
+    </div>
+
+    <div class="p-6 border-t border-gray-200">
+      <div class="flex space-x-4">
+        <input
+                type="text"
+                id="messageInput"
+                placeholder="Введите сообщение..."
+                class="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                maxlength="1000"
+        >
+        <button
+                id="sendMessageBtn"
+                class="btn-primary px-6 py-3 text-white font-semibold rounded-full transition-all duration-300"
+        >
+          <i data-feather="send" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="mt-2 text-xs text-gray-500 text-center" id="charCounter">Максимум 1000 символов</div>
+    </div>
+  </div>
+
+  <!-- Waiting Screen -->
+  <div id="waitingScreen" class="hidden p-10 text-center">
+    <div class="space-y-6">
+      <div class="status-indicator">
+        <i data-feather="search" class="w-16 h-16 text-primary-500 mx-auto"></i>
+      </div>
+      <h2 class="text-2xl font-bold text-gray-800">Поиск собеседника...</h2>
+      <p class="text-gray-600">Мы ищем подходящего собеседника по вашим критериям</p>
+      <div class="flex justify-center space-x-2">
+        <div class="w-3 h-3 bg-primary-500 rounded-full animate-bounce"></div>
+        <div class="w-3 h-3 bg-primary-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+        <div class="w-3 h-3 bg-primary-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+      </div>
+      <button id="cancelSearchBtn" class="mt-6 px-6 py-3 border border-gray-300 text-gray-600 rounded-full hover:bg-gray-50 transition-all">
+        Отменить поиск
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  feather.replace();
+
+  // Переменные для хранения данных и подключения
+  let userData = {
+    gender: null,
+    age: null,
+    companionGender: null,
+    companionAge: null,
+    theme: 'light'
+  };
+
+  let connection = null;
+  let isConnected = false;
+  let isInChat = false;
+  let isJoiningChat = false; // ДОБАВЛЕНО: отслеживаем процесс подключения к чату
+
+  // DOM элементы
+  const setupForm = document.getElementById('setupForm');
+  const chatInterface = document.getElementById('chatInterface');
+  const waitingScreen = document.getElementById('waitingScreen');
+  const statusText = document.getElementById('statusText');
+  const validationError = document.getElementById('validationError');
+  const startChatBtn = document.getElementById('startChatBtn');
+  const messageInput = document.getElementById('messageInput');
+  const messagesContainer = document.getElementById('messagesContainer');
+  const sendMessageBtn = document.getElementById('sendMessageBtn');
+  const companionInfoEl = document.getElementById('companionInfo');
+  const charCounterEl = document.getElementById('charCounter');
+  const newCompanionBtn = document.getElementById('newCompanionBtn');
+
+  // ФИКС: Правильная функция для получения URL хаба
+  function getHubUrl() {
+    // 1. Если есть глобальная настройка - используем ее
+    if (window.FLIPCHAT_BACKEND_URL && typeof window.FLIPCHAT_BACKEND_URL === 'string') {
+      let backendUrl = window.FLIPCHAT_BACKEND_URL.trim();
+      // Удаляем завершающие слэши
+      backendUrl = backendUrl.replace(/\/+$/, '');
+      // Добавляем путь к хабу
+      return backendUrl + '/chat';
+    }
+
+    // 2. Для локального режима - используем текущий хост
+    const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
+    const host = window.location.host;
+
+    return `${protocol}//${host}/chat`;
+  }
+
+  // ФИКС: Упрощенная функция инициализации SignalR
+  function initializeSignalR() {
+    try {
+      const hubUrl = getHubUrl();
+      console.log('Подключение к SignalR хабу:', hubUrl);
+
+      // Используем WebSocket с автоматическим переключением на LongPolling при необходимости
+      connection = new signalR.HubConnectionBuilder()
+              .withUrl(hubUrl)
+              .withAutomaticReconnect([0, 1000, 3000, 5000])
+              .build();
+
+      // Обработчики событий подключения
+      connection.onclose((error) => {
+        isConnected = false;
+        updateConnectionStatus('Отключено', 'text-red-400');
+        console.log('SignalR соединение закрыто:', error);
+      });
+
+      connection.onreconnecting((error) => {
+        updateConnectionStatus('Переподключение...', 'text-yellow-400');
+        console.log('SignalR переподключение:', error);
+      });
+
+      connection.onreconnected((connectionId) => {
+        isConnected = true;
+        updateConnectionStatus('Подключено', 'text-green-400');
+        console.log('SignalR переподключился:', connectionId);
+      });
+
+      // Обработчики событий чата
+      connection.on("ReceiveMessage", (message) => {
+        addMessageToChat(message.text, false);
+        // ФИКС: Автоматический скролл вниз при получении сообщения
+        scrollToBottom();
+      });
+
+      connection.on("MatchFound", (companion) => {
+        // ДОБАВЛЕНО: Проверяем, что мы действительно ищем собеседника
+        if (!isJoiningChat) {
+          console.log('Получено событие MatchFound, но isJoiningChat = false. Игнорируем.');
+          return;
         }
 
-        // Вызываем сброс при загрузке страницы, чтобы убрать "зависшие" экраны
-        document.addEventListener('DOMContentLoaded', () => {
-            resetApp(); 
-            // Восстанавливаем кнопки, если нужно (опционально)
-            initToggles();
-            
-            // Telegram WebApp
-            if (window.Telegram?.WebApp) {
-                window.Telegram.WebApp.expand();
-                window.Telegram.WebApp.ready();
-            }
-        });
-
-        function initToggles() {
-            const setupSelect = (selector, key) => {
-                document.querySelectorAll(selector).forEach(btn => {
-                    btn.onclick = () => {
-                        // Снимаем активный класс со всех кнопок этой группы
-                        document.querySelectorAll(selector).forEach(b => b.classList.remove('active'));
-                        // Добавляем текущей
-                        btn.classList.add('active');
-                        // Сохраняем выбор
-                        userData[key] = btn.dataset.gender || btn.dataset.age;
-                        
-                        // Проверка валидации формы
-                        validateForm();
-
-                        // Вибрация
-                        if (window.Telegram?.WebApp) Telegram.WebApp.HapticFeedback.impactOccurred('light');
-                    };
-                });
-            };
-
-            setupSelect('.gender-option', 'gender');
-            setupSelect('.age-group', 'age');
-            setupSelect('.comp-gender-option', 'compGender');
+        console.log('Найден собеседник:', companion);
+        isJoiningChat = false; // Сбрасываем флаг
+        showChatInterface();
+        addSystemMessage('Собеседник найден! Начинайте общение!');
+        if (companion && companion.gender && companion.age) {
+          const genderName = companion.gender === 'male' ? 'Мужчина' : companion.gender === 'female' ? 'Женщина' : 'Другое';
+          const ageName = companion.age === 'under14' ? 'До 14' : companion.age === '15-17' ? '15-17' : '18+';
+          if (companionInfoEl) companionInfoEl.textContent = `${genderName}, ${ageName}`;
+        } else if (companionInfoEl) {
+          companionInfoEl.textContent = '';
         }
+        // ФИКС: Скролл вниз при открытии чата
+        setTimeout(scrollToBottom, 100);
+      });
 
-        function validateForm() {
-            const btn = document.getElementById('startChatBtn');
-            if (userData.gender && userData.age && userData.compGender) {
-                btn.disabled = false;
-                btn.style.opacity = "1";
-            } else {
-                btn.disabled = true;
-                btn.style.opacity = "0.5";
-            }
+      connection.on("UserJoined", (message) => {
+        console.log('Пользователь присоединился:', message);
+        updateConnectionStatus('Подключено', 'text-green-400');
+      });
+
+      connection.on("UserLeft", (message) => {
+        console.log('Пользователь вышел:', message);
+        addSystemMessage(message);
+        isInChat = false;
+        isJoiningChat = false; // ДОБАВЛЕНО: сбрасываем флаг
+        if (window._typingNode) {
+          window._typingNode.remove();
+          window._typingNode = null;
         }
+        setTimeout(() => {
+          clearChat();
+          showSetupForm();
+          validateForm();
+          startChatBtn.disabled = false;
+        }, 1500);
+      });
 
-        // Логика SignalR
-        async function startSearch() {
-            if(!userData.gender || !userData.age || !userData.compGender) return;
+      connection.on("WaitingForCompanion", () => {
+        console.log('Ожидание собеседника...');
+        showWaitingScreen();
+      });
 
-            // Переключаем экраны
-            document.getElementById('setupForm').classList.add('hidden');
-            document.getElementById('waitingScreen').classList.remove('hidden');
-
-            const hubUrl = `${window.location.protocol}//${window.location.host}/chat`;
-            
-            connection = new signalR.HubConnectionBuilder()
-                .withUrl(hubUrl)
-                .withAutomaticReconnect()
-                .build();
-
-            // Обработчики событий
-            connection.on("ReceiveMessage", (msg) => appendMessage(msg.text, false));
-            
-            connection.on("MatchFound", () => {
-                document.getElementById('waitingScreen').classList.add('hidden');
-                document.getElementById('chatInterface').classList.remove('hidden');
-                appendSystemMessage("Собеседник найден! Скажите привет 👋");
-                if (window.Telegram?.WebApp) Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-            });
-
-            connection.on("UserLeft", () => {
-                appendSystemMessage("Собеседник отключился.");
-                setTimeout(resetApp, 3000); // Авто-выход через 3 сек
-            });
-
-            try {
-                await connection.start();
-                console.log("Connected");
-                
-                // Отправляем данные для поиска
-                await connection.invoke("JoinChat", {
-                    Gender: userData.gender,
-                    Age: userData.age,
-                    CompanionGender: userData.compGender,
-                    CompanionAge: userData.compAge
-                });
-
-            } catch (err) {
-                console.error(err);
-                alert("Ошибка подключения к серверу!");
-                resetApp();
-            }
+      connection.on('TypingStatus', (isTyping) => {
+        if (!window._typingNode && isTyping) {
+          window._typingNode = document.createElement('div');
+          window._typingNode.className = 'chat-message flex justify-center';
+          const inner = document.createElement('div');
+          inner.className = 'text-xs text-gray-400 italic';
+          inner.textContent = 'Собеседник печатает...';
+          window._typingNode.appendChild(inner);
+          messagesContainer.appendChild(window._typingNode);
+          scrollToBottom();
+          return;
         }
-
-        document.getElementById('startChatBtn').onclick = startSearch;
-
-        // Отправка сообщений
-        function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            if(!text || !connection) return;
-
-            connection.invoke("SendMessage", text)
-                .catch(err => console.error(err));
-            
-            appendMessage(text, true);
-            input.value = "";
+        if (window._typingNode && !isTyping) {
+          window._typingNode.remove();
+          window._typingNode = null;
         }
+      });
 
-        document.getElementById('sendBtn').onclick = sendMessage;
-        document.getElementById('messageInput').onkeypress = (e) => {
-            if(e.key === 'Enter') sendMessage();
-        };
+      // Подключение
+      connection.start()
+              .then(() => {
+                isConnected = true;
+                updateConnectionStatus('Подключено', 'text-green-400');
+                console.log('SignalR подключен');
 
-        // Функции отрисовки
-        function appendMessage(text, isOwn) {
-            const container = document.getElementById('messagesContainer');
-            const div = document.createElement('div');
-            div.className = `flex ${isOwn ? 'justify-end' : 'justify-start'} animate-fade-in`;
-            div.innerHTML = `
-                <div class="max-w-[85%] px-4 py-3 text-sm shadow-sm ${
-                    isOwn ? 'chat-bubble-own' : 'chat-bubble-other'
-                }">
-                    ${escapeHtml(text)}
-                </div>
-            `;
-            container.appendChild(div);
-            // Прокрутка вниз
-            requestAnimationFrame(() => {
-                container.scrollTop = container.scrollHeight;
-            });
-        }
+                // ДОБАВЛЕНО: Гарантируем, что после подключения показывается форма настроек
+                setTimeout(() => {
+                  if (!isInChat && !isJoiningChat) {
+                    showSetupForm();
+                  }
+                }, 100);
+              })
+              .catch(err => {
+                console.error('Ошибка подключения:', err);
+                updateConnectionStatus('Ошибка подключения', 'text-red-400');
+                showError('Ошибка подключения к серверу. Проверьте, что backend запущен.');
+              });
 
-        function appendSystemMessage(text) {
-            const container = document.getElementById('messagesContainer');
-            const div = document.createElement('div');
-            div.className = "flex justify-center my-2";
-            div.innerHTML = `<span class="bg-gray-200 dark:bg-gray-800 text-gray-500 text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest">${text}</span>`;
-            container.appendChild(div);
-        }
+    } catch (error) {
+      console.error('Ошибка инициализации SignalR:', error);
+      showError('Ошибка инициализации SignalR: ' + error.message);
+    }
+  }
 
-        function escapeHtml(text) {
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
+  // ФИКС: Простая функция для скролла вниз
+  function scrollToBottom() {
+    if (messagesContainer) {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  }
 
-        // Изначально блокируем кнопку поиска
-        validateForm();
-    </script>
+  // Вспомогательные функции
+  function persistUserData() {
+    try { localStorage.setItem('flipchat:userData', JSON.stringify(userData)); } catch (_) {}
+  }
+
+  function loadUserData() {
+    try {
+      const raw = localStorage.getItem('flipchat:userData');
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        userData = { ...userData, ...parsed };
+      }
+    } catch (_) {}
+  }
+
+  function applyTheme(theme) {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.removeAttribute('data-theme');
+    }
+  }
+
+  function clearChat() {
+    if (messagesContainer) messagesContainer.innerHTML = '';
+    if (companionInfoEl) companionInfoEl.textContent = '';
+    if (window._typingNode) { window._typingNode.remove(); window._typingNode = null; }
+    messageInput.value = '';
+    sendMessageBtn.disabled = true;
+  }
+
+  function updateConnectionStatus(text, className) {
+    statusText.textContent = text;
+    statusText.className = className;
+  }
+
+  function showError(message) {
+    validationError.textContent = message;
+    validationError.classList.remove('hidden');
+  }
+
+  function showSetupForm() {
+    setupForm.classList.remove('hidden');
+    chatInterface.classList.add('hidden');
+    waitingScreen.classList.add('hidden');
+    isInChat = false;
+    isJoiningChat = false; // ДОБАВЛЕНО: сбрасываем флаг
+  }
+
+  function showWaitingScreen() {
+    setupForm.classList.add('hidden');
+    chatInterface.classList.add('hidden');
+    waitingScreen.classList.remove('hidden');
+  }
+
+  function showChatInterface() {
+    setupForm.classList.add('hidden');
+    chatInterface.classList.remove('hidden');
+    waitingScreen.classList.add('hidden');
+    isInChat = true;
+    messageInput.focus();
+    // ФИКС: Скролл вниз при открытии чата
+    setTimeout(scrollToBottom, 100);
+  }
+
+  function addMessageToChat(text, isOwn = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message flex ${isOwn ? 'justify-end' : 'justify-start'}`;
+
+    const messageContent = document.createElement('div');
+    messageContent.className = `max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
+            isOwn
+                    ? 'bg-primary-500 text-white'
+                    : 'bg-gray-200 text-gray-800'
+    }`;
+
+    const msg = document.createElement('div');
+    msg.textContent = text;
+    const ts = new Date();
+    const time = `${String(ts.getHours()).padStart(2,'0')}:${String(ts.getMinutes()).padStart(2,'0')}`;
+    const meta = document.createElement('div');
+    meta.className = `text-[10px] mt-1 ${isOwn ? 'text-white/80' : 'text-gray-500'}`;
+    meta.textContent = time;
+
+    messageContent.appendChild(msg);
+    messageContent.appendChild(meta);
+
+    messageDiv.appendChild(messageContent);
+    messagesContainer.appendChild(messageDiv);
+    scrollToBottom();
+  }
+
+  function addSystemMessage(text) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'chat-message flex justify-center';
+
+    const messageContent = document.createElement('div');
+    messageContent.className = 'px-4 py-2 rounded-2xl bg-yellow-100 text-yellow-800 text-sm';
+    messageContent.textContent = text;
+
+    messageDiv.appendChild(messageContent);
+    messagesContainer.appendChild(messageDiv);
+    scrollToBottom();
+    return messageDiv;
+  }
+
+  function validateForm() {
+    const isValid = userData.gender && userData.age && userData.companionGender && userData.companionAge;
+    startChatBtn.disabled = !isValid;
+    if (isValid) {
+      validationError.classList.add('hidden');
+    }
+  }
+
+  function sendMessage() {
+    const message = messageInput.value.trim();
+    if (!message || !isConnected || !isInChat) return;
+
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+      connection.invoke("SendMessage", message)
+              .then(() => {
+                addMessageToChat(message, true);
+                messageInput.value = '';
+                sendMessageBtn.disabled = true;
+                if (window._typingNode) {
+                  window._typingNode.remove();
+                  window._typingNode = null;
+                }
+                if (connection && connection.state === signalR.HubConnectionState.Connected) {
+                  connection.invoke('Typing', false).catch(() => {});
+                }
+              })
+              .catch(err => {
+                console.error('Ошибка отправки сообщения:', err);
+                showError('Ошибка отправки сообщения');
+              });
+    }
+  }
+
+  // Обработчики событий для выбора пола, возраста и темы
+  const genderOptions = document.querySelectorAll('.gender-option');
+  const compGenderOptions = document.querySelectorAll('.comp-gender-option');
+
+  genderOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      genderOptions.forEach(opt => {
+        opt.classList.remove('selected', 'bg-primary-500', 'text-white', 'border-primary-500');
+      });
+      this.classList.add('selected', 'bg-primary-500', 'text-white', 'border-primary-500');
+      userData.gender = this.dataset.gender;
+      validateForm();
+      persistUserData();
+    });
+  });
+
+  compGenderOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      compGenderOptions.forEach(opt => {
+        opt.classList.remove('selected', 'bg-secondary-500', 'text-white', 'border-secondary-500');
+      });
+      this.classList.add('selected', 'bg-secondary-500', 'text-white', 'border-secondary-500');
+      userData.companionGender = this.dataset.gender;
+      validateForm();
+      persistUserData();
+    });
+  });
+
+  const ageGroups = document.querySelectorAll('.age-group');
+  const compAgeGroups = document.querySelectorAll('.comp-age-group');
+
+  ageGroups.forEach(group => {
+    group.addEventListener('click', function() {
+      ageGroups.forEach(g => {
+        const chk = g.querySelector('.age-check');
+        if (chk) chk.classList.remove('bg-primary-500', 'border-primary-500', 'opacity-100');
+        g.classList.remove('selected', 'border-primary-500', 'bg-primary-50');
+      });
+      const check = this.querySelector('.age-check');
+      if (check) check.classList.add('bg-primary-500', 'border-primary-500', 'opacity-100');
+      this.classList.add('selected', 'border-primary-500', 'bg-primary-50');
+      userData.age = this.dataset.age;
+      validateForm();
+      persistUserData();
+    });
+  });
+
+  compAgeGroups.forEach(group => {
+    group.addEventListener('click', function() {
+      compAgeGroups.forEach(g => {
+        const chk = g.querySelector('.age-check');
+        if (chk) chk.classList.remove('bg-secondary-500', 'border-secondary-500', 'opacity-100');
+        g.classList.remove('selected', 'border-secondary-500', 'bg-pink-50');
+      });
+      const check = this.querySelector('.age-check');
+      if (check) check.classList.add('bg-secondary-500', 'border-secondary-500', 'opacity-100');
+      this.classList.add('selected', 'border-secondary-500', 'bg-pink-50');
+      userData.companionAge = this.dataset.age;
+      validateForm();
+      persistUserData();
+    });
+  });
+
+  const themeSelectors = document.querySelectorAll('.theme-selector');
+  themeSelectors.forEach(selector => {
+    selector.addEventListener('click', function() {
+      themeSelectors.forEach(s => s.classList.remove('selected'));
+      this.classList.add('selected');
+      userData.theme = this.dataset.theme;
+      persistUserData();
+      applyTheme(userData.theme);
+    });
+  });
+
+  // Обработчики кнопок
+  startChatBtn.addEventListener('click', function() {
+    if (!isConnected) {
+      showError('Нет подключения к серверу');
+      return;
+    }
+
+    isJoiningChat = true; // ДОБАВЛЕНО: устанавливаем флаг поиска
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+      startChatBtn.disabled = true;
+      connection.invoke("JoinChat", userData)
+              .then(() => {
+                console.log('JoinChat успешно');
+              })
+              .catch(err => {
+                console.error('JoinChat ошибка:', err);
+                showError('Ошибка подключения к чату');
+                startChatBtn.disabled = false;
+                isJoiningChat = false; // ДОБАВЛЕНО: сбрасываем флаг при ошибке
+              });
+    }
+  });
+
+  messageInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+
+  messageInput.addEventListener('input', function() {
+    const txt = messageInput.value.trim();
+    sendMessageBtn.disabled = !txt || !isConnected || !isInChat;
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+      connection.invoke('Typing', txt.length > 0).catch(() => {});
+    }
+    if (charCounterEl) {
+      const left = 1000 - (messageInput.value.length || 0);
+      charCounterEl.textContent = `Осталось символов: ${left}`;
+    }
+  });
+
+  sendMessageBtn.addEventListener('click', sendMessage);
+
+  if (newCompanionBtn) {
+    newCompanionBtn.addEventListener('click', function() {
+      isJoiningChat = true; // ДОБАВЛЕНО: устанавливаем флаг поиска
+      if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        connection.invoke('FindNewCompanion').catch(err => console.error(err));
+      }
+      showWaitingScreen();
+    });
+  }
+
+  document.getElementById('leaveChatBtn').addEventListener('click', function() {
+    isJoiningChat = false; // ДОБАВЛЕНО: сбрасываем флаг
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+      connection.stop();
+    }
+    showSetupForm();
+    startChatBtn.disabled = false;
+  });
+
+  document.getElementById('cancelSearchBtn').addEventListener('click', function() {
+    isJoiningChat = false; // ДОБАВЛЕНО: сбрасываем флаг
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+      connection.stop();
+    }
+    showSetupForm();
+    startChatBtn.disabled = false;
+  });
+
+  // Инициализация при загрузке страницы
+  document.addEventListener('DOMContentLoaded', function() {
+    loadUserData();
+
+    if (userData.gender) {
+      const btn = document.querySelector(`.gender-option[data-gender="${userData.gender}"]`);
+      if (btn) btn.click();
+    }
+    if (userData.companionGender) {
+      const btn = document.querySelector(`.comp-gender-option[data-gender="${userData.companionGender}"]`);
+      if (btn) btn.click();
+    }
+    if (userData.age) {
+      const el = document.querySelector(`.age-group[data-age="${userData.age}"]`);
+      if (el) el.click();
+    }
+    if (userData.companionAge) {
+      const el = document.querySelector(`.comp-age-group[data-age="${userData.companionAge}"]`);
+      if (el) el.click();
+    }
+    if (userData.theme) {
+      const el = document.querySelector(`.theme-selector[data-theme="${userData.theme}"]`);
+      if (el) el.click();
+    }
+    applyTheme(userData.theme);
+
+    // Инициализируем соединение
+    initializeSignalR();
+    sendMessageBtn.disabled = true;
+
+    // ДОБАВЛЕНО: Гарантируем, что при загрузке показывается форма настроек
+    setTimeout(() => {
+      if (!isInChat && !isJoiningChat) {
+        showSetupForm();
+      }
+    }, 50);
+
+    // ДОБАВЛЕНО: Очистим localStorage для тестирования
+    // localStorage.removeItem('flipchat:userData');
+  });
+</script>
 </body>
 </html>
