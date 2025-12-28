@@ -32,6 +32,70 @@
         }
     </script>
     <style>
+        /* ОСНОВНЫЕ СТИЛИ ВИДИМОСТИ - ВЫНЕСИТЕ В НАЧАЛО <style> */
+#setupForm, #chatInterface, #waitingScreen {
+  display: none !important;
+}
+
+#setupForm.show, #chatInterface.show, #waitingScreen.show {
+  display: block !important;
+}
+
+/* Для chatInterface нужен flex */
+#chatInterface.show {
+  display: flex !important;
+}
+
+/* ДЕСКТОП */
+@media (min-width: 769px) {
+  #setupForm.show, #chatInterface.show, #waitingScreen.show {
+    display: block !important;
+  }
+  
+  #chatInterface.show {
+    display: flex !important;
+  }
+}
+
+/* МОБИЛЬНЫЕ - МИНИМАЛЬНЫЕ СТИЛИ */
+@media (max-width: 768px) {
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .max-w-4xl {
+    width: 100% !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  /* КОНТЕЙНЕР СООБЩЕНИЙ - ПРОСТОЙ РАСЧЕТ */
+  #messagesContainer {
+    height: calc(100vh - 200px) !important;
+    overflow-y: auto !important;
+    padding: 15px !important;
+    padding-bottom: 80px !important;
+  }
+
+  /* ФИКСИРОВАННАЯ ПАНЕЛЬ ВВОДА */
+  .border-t.border-gray-200 {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: white !important;
+    padding: 15px !important;
+    z-index: 1000 !important;
+  }
+
+  [data-theme="dark"] .border-t.border-gray-200 {
+    background: #111827 !important;
+  }
+}
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
@@ -729,6 +793,21 @@
     const charCounterEl = document.getElementById('charCounter');
     const newCompanionBtn = document.getElementById('newCompanionBtn');
 
+    document.addEventListener('DOMContentLoaded', function() {
+  // Сначала скрываем все явно
+  setupForm.style.display = 'none';
+  chatInterface.style.display = 'none';
+  waitingScreen.style.display = 'none';
+  
+  // Потом показываем нужное
+  setTimeout(() => {
+    if (!isInChat && !isJoiningChat) {
+      showSetupForm();
+    }
+  }, 100);
+  
+});
+
     // ФИКС: Правильная функция для получения URL хаба
     function getHubUrl() {
         // 1. Если есть глобальная настройка - используем ее
@@ -928,28 +1007,52 @@
     }
 
     function showSetupForm() {
-        setupForm.classList.remove('hidden');
-        chatInterface.classList.add('hidden');
-        waitingScreen.classList.add('hidden');
-        isInChat = false;
-        isJoiningChat = false; // ДОБАВЛЕНО: сбрасываем флаг
-    }
+  // Скрываем все
+  setupForm.classList.remove('hidden');
+  setupForm.classList.add('show');
+  chatInterface.classList.remove('show');
+  chatInterface.classList.add('hidden');
+  waitingScreen.classList.remove('show');
+  waitingScreen.classList.add('hidden');
+  
+  // Альтернативный способ на всякий случай
+  setupForm.style.display = 'block';
+  chatInterface.style.display = 'none';
+  waitingScreen.style.display = 'none';
+  
+  isInChat = false;
+  isJoiningChat = false;
+}
 
-    function showWaitingScreen() {
-        setupForm.classList.add('hidden');
-        chatInterface.classList.add('hidden');
-        waitingScreen.classList.remove('hidden');
-    }
+function showWaitingScreen() {
+  setupForm.classList.remove('show');
+  setupForm.classList.add('hidden');
+  chatInterface.classList.remove('show');
+  chatInterface.classList.add('hidden');
+  waitingScreen.classList.remove('hidden');
+  waitingScreen.classList.add('show');
+  
+  setupForm.style.display = 'none';
+  chatInterface.style.display = 'none';
+  waitingScreen.style.display = 'block';
+}
 
-    function showChatInterface() {
-        setupForm.classList.add('hidden');
-        chatInterface.classList.remove('hidden');
-        waitingScreen.classList.add('hidden');
-        isInChat = true;
-        messageInput.focus();
-        // ФИКС: Скролл вниз при открытии чата
-        setTimeout(scrollToBottom, 100);
-    }
+function showChatInterface() {
+  setupForm.classList.remove('show');
+  setupForm.classList.add('hidden');
+  chatInterface.classList.remove('hidden');
+  chatInterface.classList.add('show');
+  waitingScreen.classList.remove('show');
+  waitingScreen.classList.add('hidden');
+  
+  setupForm.style.display = 'none';
+  chatInterface.style.display = 'flex';
+  waitingScreen.style.display = 'none';
+  
+  isInChat = true;
+  messageInput.focus();
+  setTimeout(scrollToBottom, 100);
+}
 
     function addMessageToChat(text, isOwn = false) {
         const messageDiv = document.createElement('div');
@@ -1213,3 +1316,4 @@
 </script>
 </body>
 </html>
+
