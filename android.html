@@ -796,20 +796,7 @@
   const charCounterEl = document.getElementById('charCounter');
   const newCompanionBtn = document.getElementById('newCompanionBtn');
 
-  document.addEventListener('DOMContentLoaded', function() {
-    // Сначала скрываем все явно
-    setupForm.style.display = 'none';
-    chatInterface.style.display = 'none';
-    waitingScreen.style.display = 'none';
-
-    // Потом показываем нужное
-    setTimeout(() => {
-      if (!isInChat && !isJoiningChat) {
-        showSetupForm();
-      }
-    }, 100);
-
-  });
+  //-
 
   // ФИКС: Правильная функция для получения URL хаба
   function getHubUrl() {
@@ -1009,53 +996,43 @@
     validationError.classList.remove('hidden');
   }
 
-  function showSetupForm() {
-    // Скрываем все
-    setupForm.classList.remove('hidden');
-    setupForm.classList.add('show');
-    chatInterface.classList.remove('show');
-    chatInterface.classList.add('hidden');
-    waitingScreen.classList.remove('show');
-    waitingScreen.classList.add('hidden');
-    
-    // Альтернативный способ на всякий случай
-    setupForm.style.display = 'block';
-    chatInterface.style.display = 'none';
-    waitingScreen.style.display = 'none';
-    
-    isInChat = false;
-    isJoiningChat = false;
-  }
+  // ПРОСТОЕ УПРАВЛЕНИЕ ВИДИМОСТЬЮ
+function showSetupForm() {
+  setupForm.style.display = 'block';
+  chatInterface.style.display = 'none';
+  waitingScreen.style.display = 'none';
+  isInChat = false;
+}
 
-  function showWaitingScreen() {
-    setupForm.classList.remove('show');
-    setupForm.classList.add('hidden');
-    chatInterface.classList.remove('show');
-    chatInterface.classList.add('hidden');
-    waitingScreen.classList.remove('hidden');
-    waitingScreen.classList.add('show');
-    
-    setupForm.style.display = 'none';
-    chatInterface.style.display = 'none';
-    waitingScreen.style.display = 'block';
-  }
+function showWaitingScreen() {
+  setupForm.style.display = 'none';
+  chatInterface.style.display = 'none';
+  waitingScreen.style.display = 'block';
+}
 
-  function showChatInterface() {
-    setupForm.classList.remove('show');
-    setupForm.classList.add('hidden');
-    chatInterface.classList.remove('hidden');
-    chatInterface.classList.add('show');
-    waitingScreen.classList.remove('show');
-    waitingScreen.classList.add('hidden');
-    
-    setupForm.style.display = 'none';
-    chatInterface.style.display = 'flex';
-    waitingScreen.style.display = 'none';
-    
-    isInChat = true;
-    messageInput.focus();
-    setTimeout(scrollToBottom, 100);
-  }
+function showChatInterface() {
+  setupForm.style.display = 'none';
+  chatInterface.style.display = 'flex';
+  waitingScreen.style.display = 'none';
+  isInChat = true;
+  messageInput.focus();
+  setTimeout(scrollToBottom, 100);
+}
+
+// В DOMContentLoaded:
+document.addEventListener('DOMContentLoaded', function() {
+  // Явно устанавливаем начальное состояние
+  setupForm.style.display = 'none';
+  chatInterface.style.display = 'none';
+  waitingScreen.style.display = 'none';
+  
+  // Показываем форму через 50мс
+  setTimeout(() => {
+    if (!isInChat) {
+      setupForm.style.display = 'block';
+    }
+  }, 50);
+});
 
   function addMessageToChat(text, isOwn = false) {
     const messageDiv = document.createElement('div');
@@ -1319,3 +1296,4 @@
 </script>
 </body>
 </html>
+
