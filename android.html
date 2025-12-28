@@ -32,6 +32,71 @@
     }
   </script>
   <style>
+    /* ОСНОВНЫЕ СТИЛИ ВИДИМОСТИ */
+    #setupForm, #chatInterface, #waitingScreen {
+      display: none !important;
+    }
+
+    #setupForm.show, #chatInterface.show, #waitingScreen.show {
+      display: block !important;
+    }
+
+    /* Для chatInterface нужен flex */
+    #chatInterface.show {
+      display: flex !important;
+    }
+
+    /* ДЕСКТОП */
+    @media (min-width: 769px) {
+      #setupForm.show, #chatInterface.show, #waitingScreen.show {
+        display: block !important;
+      }
+
+      #chatInterface.show {
+        display: flex !important;
+      }
+    }
+
+    /* МОБИЛЬНЫЕ - МИНИМАЛЬНЫЕ СТИЛИ */
+    @media (max-width: 768px) {
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .max-w-4xl {
+        width: 100% !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+      }
+
+      /* КОНТЕЙНЕР СООБЩЕНИЙ - ПРОСТОЙ РАСЧЕТ */
+      #messagesContainer {
+        height: calc(100vh - 200px) !important;
+        overflow-y: auto !important;
+        padding: 15px !important;
+        padding-bottom: 80px !important;
+      }
+
+      /* ФИКСИРОВАННАЯ ПАНЕЛЬ ВВОДА */
+      .border-t.border-gray-200 {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: white !important;
+        padding: 15px !important;
+        z-index: 1000 !important;
+      }
+
+      [data-theme="dark"] .border-t.border-gray-200 {
+        background: #111827 !important;
+      }
+    }
+
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
@@ -138,7 +203,7 @@
       50% { opacity: 0.5; }
     }
 
-    /* МОБИЛЬНЫЕ СТИЛИ */
+    /* ДОПОЛНИТЕЛЬНЫЕ МОБИЛЬНЫЕ СТИЛИ */
     @media (max-width: 768px) {
       body {
         padding: 0 !important;
@@ -156,26 +221,15 @@
         border: none !important;
       }
 
-      /* Чат интерфейс - правильная структура */
-      #chatInterface:not(.hidden) {
-        display: flex !important;
-        flex-direction: column;
-        height: 100vh;
-      }
-
-      /* Шапка чата - минимальная высота */
-      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 {
-        flex-shrink: 0;
-        padding: 1rem !important;
-        min-height: auto;
-      }
-
-      /* Контейнер сообщений - занимает все оставшееся пространство */
-      #messagesContainer {
-        flex: 1;
+      #setupForm.show, #waitingScreen.show {
+        padding: 20px !important;
+        height: 100%;
         overflow-y: auto;
-        padding: 15px !important;
-        padding-bottom: 100px !important;
+      }
+
+      .grid.md\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
       }
 
       /* Стили скроллбара */
@@ -194,18 +248,6 @@
 
       [data-theme="dark"] #messagesContainer::-webkit-scrollbar-thumb {
         background: #6d28d9;
-      }
-
-      /* Форма настроек */
-      #setupForm, #waitingScreen {
-        padding: 20px !important;
-        height: 100%;
-        overflow-y: auto;
-      }
-
-      .grid.md\:grid-cols-2 {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
       }
 
       /* Увеличиваем кнопки для нажатия пальцем */
@@ -237,20 +279,9 @@
       h2 { font-size: 1.25rem !important; }
       .text-lg { font-size: 1rem !important; }
 
-      /* Фиксируем поле ввода внизу на мобильных */
-      .border-t.border-gray-200 {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 15px !important;
-        z-index: 100;
-      }
-
-      [data-theme="dark"] .border-t.border-gray-200 {
-        background: #111827;
-        border-color: #374151;
+      /* Добавляем отступ для сообщений чтобы не перекрывалось поле ввода */
+      #messagesContainer {
+        padding-bottom: 100px !important;
       }
 
       /* Увеличиваем поле ввода */
@@ -281,166 +312,24 @@
 
     /* Мобильная адаптация для вертикальной ориентации */
     @media (max-width: 768px) and (orientation: portrait) {
-      body {
-        padding: 0 !important;
-        margin: 0 !important;
-        height: 100vh;
-        overflow: hidden;
-      }
-
-      body > div.max-w-4xl {
-        width: 100% !important;
-        max-width: 100% !important;
-        height: 100vh !important;
-        margin: 0 !important;
-        border-radius: 0 !important;
-        border: none !important;
-        display: flex;
-        flex-direction: column;
-      }
-
-      /* Чат интерфейс - правильная структура для портретной ориентации */
-      #chatInterface:not(.hidden) {
-        height: 100vh;
-        display: flex !important;
-        flex-direction: column;
-      }
-
-      /* Шапка чата - еще меньше для портретной ориентации */
-      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 {
+      #chatInterface.show .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 {
         padding: 0.5rem 0.75rem !important;
-        flex-shrink: 0;
       }
 
-      #chatInterface h2 {
+      #chatInterface.show h2 {
         font-size: 0.9rem !important;
       }
 
-      #chatInterface p.text-sm {
+      #chatInterface.show .text-sm {
         font-size: 0.7rem !important;
       }
 
-      /* Кнопки в шапке чата */
-      #chatInterface .flex.justify-between.items-center button {
-        font-size: 0.7rem !important;
-        padding: 0.3rem 0.5rem !important;
-        min-height: 30px !important;
-        min-width: auto !important;
-      }
-
-      /* Контейнер сообщений */
       #messagesContainer {
         height: calc(100vh - 140px) !important;
         padding: 0.5rem !important;
         padding-bottom: 100px !important;
-        flex: 1;
       }
 
-      /* Уменьшаем заголовок */
-      .bg-gradient-to-r.from-primary-500.to-secondary-500.p-8 {
-        padding: 0.75rem !important;
-      }
-
-      h1.text-4xl {
-        font-size: 1.5rem !important;
-      }
-
-      .text-lg {
-        font-size: 0.8rem !important;
-      }
-
-      /* Делаем форму настроек прокручиваемой */
-      #setupForm {
-        padding: 0.75rem !important;
-        flex: 1;
-        overflow-y: auto !important;
-        height: auto;
-      }
-
-      /* Одна колонка для мобильных */
-      .grid.md\:grid-cols-2 {
-        grid-template-columns: 1fr !important;
-        gap: 0.75rem !important;
-      }
-
-      /* Уменьшаем заголовки секций */
-      h2.text-2xl {
-        font-size: 1rem !important;
-        margin-bottom: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
-      }
-
-      /* Уменьшаем кнопки выбора пола */
-      .gender-option, .comp-gender-option {
-        padding: 0.5rem 0.25rem !important;
-        font-size: 0.7rem !important;
-        min-height: 50px !important;
-      }
-
-      .gender-option i, .comp-gender-option i {
-        width: 1rem !important;
-        height: 1rem !important;
-        margin-bottom: 0.25rem !important;
-      }
-
-      /* Уменьшаем блоки возраста */
-      .age-group, .comp-age-group {
-        padding: 0.5rem !important;
-        margin-bottom: 0.25rem !important;
-        font-size: 0.8rem !important;
-      }
-
-      .age-check {
-        width: 1rem !important;
-        height: 1rem !important;
-      }
-
-      .age-check i {
-        width: 0.75rem !important;
-        height: 0.75rem !important;
-      }
-
-      /* Уменьшаем выбор темы */
-      .mt-12 {
-        margin-top: 1rem !important;
-      }
-
-      .theme-selector {
-        width: 70px !important;
-        height: 70px !important;
-      }
-
-      .theme-selector .w-20, .theme-selector .h-20 {
-        width: 40px !important;
-        height: 40px !important;
-      }
-
-      .theme-selector i {
-        width: 1.25rem !important;
-        height: 1.25rem !important;
-      }
-
-      /* Уменьшаем кнопку "Начать общение" */
-      .mt-16 {
-        margin-top: 1rem !important;
-        margin-bottom: 0.5rem !important;
-      }
-
-      #startChatBtn {
-        padding: 0.6rem 1rem !important;
-        font-size: 0.8rem !important;
-        width: 100% !important;
-        max-width: 250px !important;
-        margin: 0 auto !important;
-      }
-
-      #startChatBtn i {
-        width: 1rem !important;
-        height: 1rem !important;
-        margin-left: 0.25rem !important;
-      }
-
-      /* Поле ввода в чате */
       #messageInput {
         font-size: 16px !important;
         height: 40px !important;
@@ -457,109 +346,13 @@
         width: 1rem !important;
         height: 1rem !important;
       }
-
-      /* Уменьшаем отступы в секциях */
-      .space-y-8 > * + * {
-        margin-top: 0.75rem !important;
-      }
-
-      /* Уменьшаем текст подсказок */
-      .block.text-sm {
-        font-size: 0.75rem !important;
-        margin-bottom: 0.25rem !important;
-      }
-
-      /* Уменьшаем все отступы в форме */
-      #setupForm > * {
-        margin-top: 0.5rem !important;
-      }
-
-      /* Уменьшаем отступы между колонками */
-      .gap-10 {
-        gap: 0.75rem !important;
-      }
-    }
-
-    /* Для очень маленьких экранов в вертикальной ориентации */
-    @media (max-width: 375px) and (orientation: portrait) {
-      #setupForm {
-        padding: 0.5rem !important;
-      }
-
-      .gender-option, .comp-gender-option {
-        padding: 0.4rem 0.2rem !important;
-        font-size: 0.65rem !important;
-      }
-
-      .theme-selector {
-        width: 60px !important;
-        height: 60px !important;
-      }
-
-      .theme-selector .w-20, .theme-selector .h-20 {
-        width: 35px !important;
-        height: 35px !important;
-      }
-
-      h1.text-4xl {
-        font-size: 1.25rem !important;
-      }
-
-      #startChatBtn {
-        padding: 0.5rem 0.75rem !important;
-        font-size: 0.75rem !important;
-      }
-
-      /* Шапка чата - еще меньше */
-      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 {
-        padding: 0.4rem 0.6rem !important;
-      }
-
-      #chatInterface h2 {
-        font-size: 0.8rem !important;
-      }
-
-      #chatInterface p.text-sm {
-        font-size: 0.6rem !important;
-      }
-
-      #chatInterface .flex.justify-between.items-center button {
-        font-size: 0.6rem !important;
-        padding: 0.2rem 0.4rem !important;
-      }
     }
 
     /* Горизонтальная ориентация - используем стандартные стили */
     @media (max-width: 768px) and (orientation: landscape) {
-      #chatInterface:not(.hidden) {
-        height: 100vh;
-        display: flex !important;
-        flex-direction: column;
-      }
-
       #messagesContainer {
         height: calc(100vh - 120px) !important;
         padding-bottom: 100px !important;
-        flex: 1;
-      }
-
-      /* Шапка чата - минимальная высота для ландшафта */
-      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 {
-        padding: 0.5rem !important;
-        flex-shrink: 0;
-      }
-
-      #chatInterface h2 {
-        font-size: 0.8rem !important;
-      }
-
-      #chatInterface p.text-sm {
-        font-size: 0.7rem !important;
-      }
-
-      #chatInterface .flex.justify-between.items-center button {
-        font-size: 0.7rem !important;
-        padding: 0.3rem 0.5rem !important;
       }
     }
   </style>
@@ -575,7 +368,7 @@
   </div>
 
   <!-- Setup Form -->
-  <div id="setupForm" class="p-10 hidden">
+  <div id="setupForm" class="p-10">
     <div class="grid md:grid-cols-2 gap-10">
       <!-- Your Profile Section -->
       <div class="space-y-8">
@@ -806,6 +599,21 @@
   const charCounterEl = document.getElementById('charCounter');
   const newCompanionBtn = document.getElementById('newCompanionBtn');
 
+  document.addEventListener('DOMContentLoaded', function() {
+    // Сначала скрываем все явно
+    setupForm.style.display = 'none';
+    chatInterface.style.display = 'none';
+    waitingScreen.style.display = 'none';
+
+    // Потом показываем нужное
+    setTimeout(() => {
+      if (!isInChat && !isJoiningChat) {
+        showSetupForm();
+      }
+    }, 100);
+
+  });
+
   // ФИКС: Правильная функция для получения URL хаба
   function getHubUrl() {
     // 1. Если есть глобальная настройка - используем ее
@@ -1005,26 +813,50 @@
   }
 
   function showSetupForm() {
+    // Скрываем все
     setupForm.classList.remove('hidden');
+    setupForm.classList.add('show');
+    chatInterface.classList.remove('show');
     chatInterface.classList.add('hidden');
+    waitingScreen.classList.remove('show');
     waitingScreen.classList.add('hidden');
+
+    // Альтернативный способ на всякий случай
+    setupForm.style.display = 'block';
+    chatInterface.style.display = 'none';
+    waitingScreen.style.display = 'none';
+
     isInChat = false;
     isJoiningChat = false;
   }
 
   function showWaitingScreen() {
+    setupForm.classList.remove('show');
     setupForm.classList.add('hidden');
+    chatInterface.classList.remove('show');
     chatInterface.classList.add('hidden');
     waitingScreen.classList.remove('hidden');
+    waitingScreen.classList.add('show');
+
+    setupForm.style.display = 'none';
+    chatInterface.style.display = 'none';
+    waitingScreen.style.display = 'block';
   }
 
   function showChatInterface() {
+    setupForm.classList.remove('show');
     setupForm.classList.add('hidden');
     chatInterface.classList.remove('hidden');
+    chatInterface.classList.add('show');
+    waitingScreen.classList.remove('show');
     waitingScreen.classList.add('hidden');
+
+    setupForm.style.display = 'none';
+    chatInterface.style.display = 'flex';
+    waitingScreen.style.display = 'none';
+
     isInChat = true;
     messageInput.focus();
-    // ФИКС: Скролл вниз при открытии чата
     setTimeout(scrollToBottom, 100);
   }
 
@@ -1276,13 +1108,6 @@
     // Инициализируем соединение
     initializeSignalR();
     sendMessageBtn.disabled = true;
-
-    // ДОБАВЛЕНО: Гарантируем, что при загрузке показывается форма настроек
-    setTimeout(() => {
-      if (!isInChat && !isJoiningChat) {
-        showSetupForm();
-      }
-    }, 50);
   });
 </script>
 </body>
