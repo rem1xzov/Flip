@@ -96,6 +96,8 @@
         background: #111827 !important;
       }
     }
+    
+    /* Стили из android.html (перенесены, исключая дублирующиеся медиа-запросы) */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
@@ -202,6 +204,7 @@
       50% { opacity: 0.5; }
     }
 
+    /* Остальные медиа-запросы из оригинального ioshtml.html оставлены без изменений */
     /* ТОЛЬКО адаптация для мобильных - ничего не меняем кроме размеров */
     @media (max-width: 768px) {
       body {
@@ -1014,12 +1017,12 @@
     chatInterface.classList.add('hidden');
     waitingScreen.classList.remove('show');
     waitingScreen.classList.add('hidden');
-
+    
     // Альтернативный способ на всякий случай
     setupForm.style.display = 'block';
     chatInterface.style.display = 'none';
     waitingScreen.style.display = 'none';
-
+    
     isInChat = false;
     isJoiningChat = false;
   }
@@ -1031,7 +1034,7 @@
     chatInterface.classList.add('hidden');
     waitingScreen.classList.remove('hidden');
     waitingScreen.classList.add('show');
-
+    
     setupForm.style.display = 'none';
     chatInterface.style.display = 'none';
     waitingScreen.style.display = 'block';
@@ -1044,11 +1047,11 @@
     chatInterface.classList.add('show');
     waitingScreen.classList.remove('show');
     waitingScreen.classList.add('hidden');
-
+    
     setupForm.style.display = 'none';
     chatInterface.style.display = 'flex';
     waitingScreen.style.display = 'none';
-
+    
     isInChat = true;
     messageInput.focus();
     setTimeout(scrollToBottom, 100);
@@ -1316,5 +1319,3 @@
 </script>
 </body>
 </html>
-
-
