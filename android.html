@@ -332,6 +332,21 @@
       }
     }
 
+    /* Дебаг: проверить ориентацию */
+    @media (max-width: 768px) and (orientation: portrait) {
+      body::before {
+        content: "PORTRAIT ORIENTATION" !important;
+        position: fixed !important;
+        top: 10px !important;
+        left: 10px !important;
+        background: red !important;
+        color: white !important;
+        padding: 5px !important;
+        z-index: 9999 !important;
+        font-size: 12px !important;
+      }
+    }
+
     /* Мобильная адаптация для вертикальной ориентации */
     @media (max-width: 768px) and (orientation: portrait) {
       body {
@@ -457,26 +472,32 @@
         margin-left: 0.25rem !important;
       }
 
-      /* Чат интерфейс для вертикальной ориентации - ИСПРАВЛЕНО */
-      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500 {
+      /* Чат интерфейс для вертикальной ориентации - ИСПРАВЛЕННЫЕ СЕЛЕКТОРЫ */
+      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 {
         padding: 0.75rem !important;
       }
 
-      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500 .flex {
+      /* ИСПРАВЛЕНО: добавили .p-6 к селектору */
+      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 .flex {
+        display: flex !important;
         flex-direction: column !important;
         align-items: flex-start !important;
         gap: 0.5rem !important;
-      }
-
-      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500 .flex > div:first-child {
         width: 100% !important;
       }
 
-      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500 .flex > div:last-child {
+      /* Заголовок и информация о собеседнике */
+      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 .flex > div:first-child {
+        width: 100% !important;
+      }
+
+      /* Контейнер с кнопками */
+      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 .flex > div:last-child {
         width: 100% !important;
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
+        margin-top: 0.5rem !important;
       }
 
       #chatInterface h2 {
@@ -580,6 +601,12 @@
       #messagesContainer {
         height: calc(100vh - 120px) !important;
         padding-bottom: 100px !important;
+      }
+
+      /* Исправляем заголовок чата для горизонтальной ориентации */
+      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 .flex {
+        flex-direction: row !important;
+        align-items: center !important;
       }
     }
   </style>
