@@ -457,17 +457,50 @@
         margin-left: 0.25rem !important;
       }
 
-      /* Чат интерфейс для вертикальной ориентации */
-      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 {
-        padding: 0.5rem 0.75rem !important;
+      /* Чат интерфейс для вертикальной ориентации - ИСПРАВЛЕНО */
+      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500 {
+        padding: 0.75rem !important;
+      }
+
+      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500 .flex {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+      }
+
+      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500 .flex > div:first-child {
+        width: 100% !important;
+      }
+
+      #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500 .flex > div:last-child {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
       }
 
       #chatInterface h2 {
-        font-size: 0.9rem !important;
+        font-size: 1rem !important;
+        margin-bottom: 0.25rem !important;
+      }
+
+      #companionInfo {
+        font-size: 0.8rem !important;
+      }
+
+      #newCompanionBtn {
+        font-size: 0.75rem !important;
+        padding: 0.5rem 1rem !important;
+        white-space: nowrap !important;
+      }
+
+      #leaveChatBtn {
+        padding: 0.5rem !important;
+        min-width: auto !important;
       }
 
       #messagesContainer {
-        height: calc(100vh - 140px) !important;
+        height: calc(100vh - 160px) !important;
         padding: 0.5rem !important;
         padding-bottom: 100px !important;
       }
@@ -1316,5 +1349,3 @@
 </script>
 </body>
 </html>
-
-
