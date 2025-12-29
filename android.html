@@ -224,7 +224,7 @@
             h2 { font-size: 1rem !important; }
             .text-lg { font-size: 0.8rem !important; }
 
-            /* ПАНЕЛЬ ВВОДА - ИСПРАВЛЕННЫЙ РАЗМЕР (вернул прежний) */
+            /* ПАНЕЛЬ ВВОДА - ИСПРАВЛЕННЫЙ РАЗМЕР */
             .border-t.border-gray-200 {
                 position: fixed !important;
                 bottom: 0 !important;
@@ -233,7 +233,7 @@
                 background: white !important;
                 padding: 8px 12px !important;
                 z-index: 100 !important;
-                height: 60px !important; /* ВЕРНУЛ ПРЕЖНЮЮ ВЫСОТУ */
+                height: 60px !important;
                 display: flex !important;
                 align-items: center !important;
                 border-top: 1px solid #e5e7eb !important;
@@ -247,7 +247,7 @@
             /* Поле ввода */
             #messageInput {
                 font-size: 14px !important;
-                height: 44px !important; /* ВЕРНУЛ ПРЕЖНИЙ РАЗМЕР */
+                height: 44px !important;
                 padding: 0 12px !important;
                 flex: 1 !important;
             }
@@ -292,8 +292,12 @@
                 flex-direction: column !important;
             }
 
-            /* ЧАТ ИНТЕРФЕЙС ДОЛЖЕН БЫТЬ FLEX-КОНТЕЙНЕРОМ */
-            #chatInterface {
+            /* ЧАТ ИНТЕРФЕЙС ДОЛЖЕН БЫТЬ FLEX-КОНТЕЙНЕРОМ ТОЛЬКО КОГДА ПОКАЗАН */
+            #chatInterface.hidden {
+                display: none !important;
+            }
+            
+            #chatInterface:not(.hidden) {
                 display: flex !important;
                 flex-direction: column !important;
                 flex: 1 !important;
@@ -418,7 +422,7 @@
                 font-size: 0.75rem !important;
             }
 
-            /* ИСПРАВЛЕННЫЙ КОНТЕЙНЕР СООБЩЕНИЙ - ОСНОВНОЕ ИСПРАВЛЕНИЕ */
+            /* ИСПРАВЛЕННЫЙ КОНТЕЙНЕР СООБЩЕНИЙ */
             #messagesContainer {
                 flex: 1 !important;
                 min-height: 0 !important;
@@ -542,7 +546,6 @@
 
     <!-- Setup Form -->
     <div id="setupForm" class="p-10">
-        <!-- ... форма настроек ... -->
         <div class="grid md:grid-cols-2 gap-10">
             <!-- Your Profile Section -->
             <div class="space-y-8">
@@ -979,12 +982,21 @@
         waitingScreen.classList.add('hidden');
         isInChat = false;
         isJoiningChat = false;
+        
+        // Важно: сбрасываем все inline стили у chatInterface
+        chatInterface.style.display = '';
+        chatInterface.style.flexDirection = '';
+        chatInterface.style.height = '';
+        chatInterface.style.flex = '';
+        chatInterface.style.minHeight = '';
     }
 
     function showWaitingScreen() {
         setupForm.classList.add('hidden');
         chatInterface.classList.add('hidden');
         waitingScreen.classList.remove('hidden');
+        isInChat = false;
+        isJoiningChat = true;
     }
 
     function showChatInterface() {
@@ -992,11 +1004,8 @@
         chatInterface.classList.remove('hidden');
         waitingScreen.classList.add('hidden');
         isInChat = true;
+        isJoiningChat = false;
         messageInput.focus();
-        // Делаем чат интерфейс flex-контейнером
-        chatInterface.style.display = 'flex';
-        chatInterface.style.flexDirection = 'column';
-        chatInterface.style.height = '100vh';
         
         // Даем время на рендеринг, потом скроллим
         setTimeout(scrollToBottom, 100);
