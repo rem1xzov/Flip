@@ -138,7 +138,7 @@
             50% { opacity: 0.5; }
         }
 
-        /* ТОЛЬКО НОРМАЛЬНЫЕ РАЗМЕРЫ КНОПОК КАК В ОРИГИНАЛЕ */
+        /* МОБИЛЬНЫЕ СТИЛИ */
         @media (max-width: 768px) {
             body {
                 padding: 0 !important;
@@ -167,12 +167,13 @@
                 gap: 16px !important;
             }
 
-            /* НОРМАЛЬНЫЙ СКРОЛЛ */
+            /* РАБОЧИЙ СКРОЛЛ */
             #messagesContainer {
-                height: calc(100vh - 160px) !important;
+                height: calc(100vh - 140px) !important;
                 padding: 12px !important;
                 overflow-y: auto !important;
                 -webkit-overflow-scrolling: touch !important;
+                padding-bottom: 120px !important; /* Больше отступ снизу */
             }
 
             #messagesContainer::-webkit-scrollbar {
@@ -192,7 +193,7 @@
                 background: #6d28d9;
             }
 
-            /* НОРМАЛЬНЫЕ КНОПКИ */
+            /* Кнопки */
             .gender-option, .comp-gender-option {
                 padding: 10px 6px !important;
                 font-size: 12px !important;
@@ -214,54 +215,55 @@
             .w-28 { width: 80px !important; }
             .h-28 { height: 80px !important; }
 
-            /* Нормальные шрифты */
+            /* Шрифты */
             h1 { font-size: 1.5rem !important; }
             h2 { font-size: 1rem !important; }
             .text-lg { font-size: 0.8rem !important; }
 
-            /* Нормальная панель ввода */
+            /* ПАНЕЛЬ ВВОДА - ФИКСИРОВАННАЯ НО С ПРАВИЛЬНЫМ ОТСТУПОМ */
             .border-t.border-gray-200 {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: white;
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                background: white !important;
                 padding: 10px 12px !important;
-                z-index: 100;
+                z-index: 100 !important;
+                height: 70px !important; /* Фиксированная высота */
+                display: flex !important;
+                align-items: center !important;
             }
 
             [data-theme="dark"] .border-t.border-gray-200 {
-                background: #111827;
-                border-color: #374151;
+                background: #111827 !important;
+                border-color: #374151 !important;
             }
 
-            /* Отступ для сообщений */
-            #messagesContainer {
-                padding-bottom: 80px !important;
-            }
-
-            /* Нормальное поле ввода */
+            /* Поле ввода */
             #messageInput {
                 font-size: 14px !important;
-                height: 36px !important;
+                height: 40px !important;
                 padding: 0 12px !important;
+                flex: 1 !important;
             }
 
-            /* НОРМАЛЬНАЯ КНОПКА ОТПРАВКИ */
+            /* Кнопка отправки */
             #sendMessageBtn {
-                width: 36px !important;
-                height: 36px !important;
-                min-width: 36px !important;
-                min-height: 36px !important;
-                padding: 8px !important;
+                width: 40px !important;
+                height: 40px !important;
+                min-width: 40px !important;
+                min-height: 40px !important;
+                padding: 0 !important;
+                margin-left: 8px !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
+                flex-shrink: 0 !important;
             }
 
             #sendMessageBtn i {
-                width: 16px !important;
-                height: 16px !important;
+                width: 18px !important;
+                height: 18px !important;
             }
         }
 
@@ -285,9 +287,9 @@
                 flex-direction: column;
             }
 
-            /* Уменьшаем заголовок */
+            /* Заголовок */
             .bg-gradient-to-r.from-primary-500.to-secondary-500.p-8 {
-                padding: 0.75rem !important;
+                padding: 12px 16px !important;
             }
 
             h1.text-4xl {
@@ -298,45 +300,43 @@
                 font-size: 0.75rem !important;
             }
 
-            /* Делаем форму настроек прокручиваемой */
+            /* Форма настроек */
             #setupForm {
-                padding: 0.75rem !important;
+                padding: 12px !important;
                 flex: 1;
                 overflow-y: auto !important;
                 -webkit-overflow-scrolling: touch;
-                height: auto;
             }
 
-            /* Одна колонка для мобильных */
             .grid.md\:grid-cols-2 {
                 grid-template-columns: 1fr !important;
-                gap: 0.75rem !important;
+                gap: 12px !important;
             }
 
-            /* Уменьшаем заголовки секций */
+            /* Заголовки */
             h2.text-2xl {
                 font-size: 0.9rem !important;
-                margin-bottom: 0.5rem !important;
-                padding-bottom: 0.5rem !important;
+                margin-bottom: 8px !important;
+                padding-bottom: 4px !important;
             }
 
-            /* Кнопки выбора пола */
+            /* Кнопки пола */
             .gender-option, .comp-gender-option {
-                padding: 0.5rem 0.25rem !important;
+                padding: 8px 4px !important;
                 font-size: 0.7rem !important;
-                min-height: 40px !important;
+                min-height: 38px !important;
             }
 
             .gender-option i, .comp-gender-option i {
                 width: 0.9rem !important;
                 height: 0.9rem !important;
-                margin-bottom: 0.25rem !important;
+                margin-bottom: 2px !important;
             }
 
             /* Блоки возраста */
             .age-group, .comp-age-group {
-                padding: 0.5rem !important;
-                margin-bottom: 0.25rem !important;
+                padding: 8px !important;
+                margin-bottom: 4px !important;
                 font-size: 0.8rem !important;
             }
 
@@ -350,9 +350,9 @@
                 height: 0.7rem !important;
             }
 
-            /* Уменьшаем выбор темы */
+            /* Выбор темы */
             .mt-12 {
-                margin-top: 1rem !important;
+                margin-top: 16px !important;
             }
 
             .theme-selector {
@@ -372,12 +372,12 @@
 
             /* Кнопка "Начать общение" */
             .mt-16 {
-                margin-top: 1rem !important;
-                margin-bottom: 0.5rem !important;
+                margin-top: 20px !important;
+                margin-bottom: 12px !important;
             }
 
             #startChatBtn {
-                padding: 0.6rem 1rem !important;
+                padding: 10px 16px !important;
                 font-size: 0.8rem !important;
                 width: 100% !important;
                 max-width: 200px !important;
@@ -387,48 +387,52 @@
             #startChatBtn i {
                 width: 0.9rem !important;
                 height: 0.9rem !important;
-                margin-left: 0.25rem !important;
+                margin-left: 4px !important;
             }
 
             /* Чат интерфейс */
             #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 {
-                padding: 0.5rem 0.75rem !important;
+                padding: 12px 16px !important;
             }
 
             #chatInterface h2 {
                 font-size: 0.9rem !important;
             }
 
+            #companionInfo {
+                font-size: 0.75rem !important;
+            }
+
+            /* ИСПРАВЛЕННЫЙ КОНТЕЙНЕР СООБЩЕНИЙ */
             #messagesContainer {
-                height: calc(100vh - 140px) !important;
-                padding: 0.5rem !important;
-                padding-bottom: 70px !important;
+                height: calc(100vh - 130px) !important; /* Уменьшил отступ сверху */
+                padding: 12px !important;
+                padding-bottom: 120px !important; /* Большой отступ снизу чтобы видно все сообщения */
             }
 
             #messageInput {
                 font-size: 14px !important;
-                height: 36px !important;
-                padding: 0 0.75rem !important;
+                height: 40px !important;
+                padding: 0 12px !important;
             }
 
             #sendMessageBtn {
-                width: 36px !important;
-                height: 36px !important;
-                min-width: 36px !important;
-                min-height: 36px !important;
-                padding: 8px !important;
+                width: 40px !important;
+                height: 40px !important;
+                min-width: 40px !important;
+                min-height: 40px !important;
             }
 
             #sendMessageBtn i {
-                width: 16px !important;
-                height: 16px !important;
+                width: 18px !important;
+                height: 18px !important;
             }
         }
 
         /* Для очень маленьких экранов */
         @media (max-width: 375px) {
             .gender-option, .comp-gender-option {
-                padding: 8px 4px !important;
+                padding: 6px 3px !important;
                 font-size: 10px !important;
                 min-height: 36px !important;
             }
@@ -448,9 +452,13 @@
             }
 
             #startChatBtn {
-                padding: 0.5rem 0.75rem !important;
+                padding: 8px 14px !important;
                 font-size: 0.75rem !important;
                 max-width: 180px !important;
+            }
+            
+            #messagesContainer {
+                padding-bottom: 110px !important;
             }
         }
 
@@ -458,7 +466,23 @@
         @media (max-width: 768px) and (orientation: landscape) {
             #messagesContainer {
                 height: calc(100vh - 120px) !important;
-                padding-bottom: 70px !important;
+                padding-bottom: 100px !important;
+            }
+            
+            .border-t.border-gray-200 {
+                height: 60px !important;
+                padding: 8px 12px !important;
+            }
+            
+            #messageInput {
+                height: 36px !important;
+            }
+            
+            #sendMessageBtn {
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
             }
         }
 
@@ -482,6 +506,7 @@
 
     <!-- Setup Form -->
     <div id="setupForm" class="p-10">
+        <!-- ... форма настроек ... -->
         <div class="grid md:grid-cols-2 gap-10">
             <!-- Your Profile Section -->
             <div class="space-y-8">
@@ -850,13 +875,30 @@
         }
     }
 
-    // Простой скролл вниз
+    // УЛУЧШЕННАЯ функция для скролла вниз
     function scrollToBottom() {
         if (!messagesContainer) return;
         
+        // Несколько попыток с разными задержками
+        const scroll = () => {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        };
+        
+        // Прокручиваем несколько раз для надежности
+        scroll();
+        setTimeout(scroll, 50);
+        setTimeout(scroll, 100);
+        setTimeout(scroll, 200);
+        
+        // Используем requestAnimationFrame
+        requestAnimationFrame(() => {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+        
+        // Дополнительный вызов через 300мс
         setTimeout(() => {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }, 50);
+        }, 300);
     }
 
     // Вспомогательные функции
@@ -922,7 +964,8 @@
         waitingScreen.classList.add('hidden');
         isInChat = true;
         messageInput.focus();
-        scrollToBottom();
+        // Даем время на рендеринг, потом скроллим
+        setTimeout(scrollToBottom, 300);
     }
 
     function addMessageToChat(text, isOwn = false) {
@@ -949,7 +992,9 @@
 
         messageDiv.appendChild(messageContent);
         messagesContainer.appendChild(messageDiv);
-        scrollToBottom();
+        
+        // Скроллим с задержкой после добавления сообщения
+        setTimeout(scrollToBottom, 150);
     }
 
     function addSystemMessage(text) {
@@ -962,7 +1007,9 @@
 
         messageDiv.appendChild(messageContent);
         messagesContainer.appendChild(messageDiv);
-        scrollToBottom();
+        
+        // Скроллим с задержкой
+        setTimeout(scrollToBottom, 150);
         return messageDiv;
     }
 
