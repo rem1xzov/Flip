@@ -167,13 +167,14 @@
                 gap: 16px !important;
             }
 
-            /* РАБОЧИЙ СКРОЛЛ */
+            /* ИСПРАВЛЕННЫЙ СКРОЛЛ - БОЛЬШЕ ВЫСОТЫ */
             #messagesContainer {
-                height: calc(100vh - 140px) !important;
+                height: calc(100vh - 130px) !important;
                 padding: 12px !important;
                 overflow-y: auto !important;
                 -webkit-overflow-scrolling: touch !important;
-                padding-bottom: 120px !important; /* Больше отступ снизу */
+                padding-bottom: 120px !important;
+                scroll-behavior: smooth;
             }
 
             #messagesContainer::-webkit-scrollbar {
@@ -220,7 +221,7 @@
             h2 { font-size: 1rem !important; }
             .text-lg { font-size: 0.8rem !important; }
 
-            /* ПАНЕЛЬ ВВОДА - ФИКСИРОВАННАЯ НО С ПРАВИЛЬНЫМ ОТСТУПОМ */
+            /* ПАНЕЛЬ ВВОДА */
             .border-t.border-gray-200 {
                 position: fixed !important;
                 bottom: 0 !important;
@@ -229,9 +230,10 @@
                 background: white !important;
                 padding: 10px 12px !important;
                 z-index: 100 !important;
-                height: 70px !important; /* Фиксированная высота */
+                height: 70px !important;
                 display: flex !important;
                 align-items: center !important;
+                border-top: 1px solid #e5e7eb !important;
             }
 
             [data-theme="dark"] .border-t.border-gray-200 {
@@ -405,9 +407,9 @@
 
             /* ИСПРАВЛЕННЫЙ КОНТЕЙНЕР СООБЩЕНИЙ */
             #messagesContainer {
-                height: calc(100vh - 130px) !important; /* Уменьшил отступ сверху */
+                height: calc(100vh - 120px) !important;
                 padding: 12px !important;
-                padding-bottom: 120px !important; /* Большой отступ снизу чтобы видно все сообщения */
+                padding-bottom: 110px !important;
             }
 
             #messageInput {
@@ -465,8 +467,8 @@
         /* Горизонтальная ориентация */
         @media (max-width: 768px) and (orientation: landscape) {
             #messagesContainer {
-                height: calc(100vh - 120px) !important;
-                padding-bottom: 100px !important;
+                height: calc(100vh - 110px) !important;
+                padding-bottom: 90px !important;
             }
             
             .border-t.border-gray-200 {
@@ -682,7 +684,6 @@
                     <i data-feather="send" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div class="mt-2 text-xs text-gray-500 text-center" id="charCounter">Максимум 1000 символов</div>
         </div>
     </div>
 
@@ -734,7 +735,6 @@
     const messagesContainer = document.getElementById('messagesContainer');
     const sendMessageBtn = document.getElementById('sendMessageBtn');
     const companionInfoEl = document.getElementById('companionInfo');
-    const charCounterEl = document.getElementById('charCounter');
 
     // Функция для получения URL хаба
     function getHubUrl() {
@@ -879,26 +879,20 @@
     function scrollToBottom() {
         if (!messagesContainer) return;
         
-        // Несколько попыток с разными задержками
-        const scroll = () => {
+        // Используем scrollIntoView для последнего сообщения
+        const messages = messagesContainer.querySelectorAll('.chat-message');
+        if (messages.length > 0) {
+            const lastMessage = messages[messages.length - 1];
+            lastMessage.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        } else {
+            // Если нет сообщений, просто прокручиваем контейнер
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        };
+        }
         
-        // Прокручиваем несколько раз для надежности
-        scroll();
-        setTimeout(scroll, 50);
-        setTimeout(scroll, 100);
-        setTimeout(scroll, 200);
-        
-        // Используем requestAnimationFrame
-        requestAnimationFrame(() => {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        });
-        
-        // Дополнительный вызов через 300мс
+        // Дополнительная прокрутка для уверенности
         setTimeout(() => {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }, 300);
+        }, 50);
     }
 
     // Вспомогательные функции
@@ -965,7 +959,7 @@
         isInChat = true;
         messageInput.focus();
         // Даем время на рендеринг, потом скроллим
-        setTimeout(scrollToBottom, 300);
+        setTimeout(scrollToBottom, 100);
     }
 
     function addMessageToChat(text, isOwn = false) {
@@ -993,8 +987,8 @@
         messageDiv.appendChild(messageContent);
         messagesContainer.appendChild(messageDiv);
         
-        // Скроллим с задержкой после добавления сообщения
-        setTimeout(scrollToBottom, 150);
+        // Скроллим с небольшой задержкой
+        setTimeout(scrollToBottom, 10);
     }
 
     function addSystemMessage(text) {
@@ -1009,7 +1003,7 @@
         messagesContainer.appendChild(messageDiv);
         
         // Скроллим с задержкой
-        setTimeout(scrollToBottom, 150);
+        setTimeout(scrollToBottom, 10);
         return messageDiv;
     }
 
@@ -1155,10 +1149,6 @@
         sendMessageBtn.disabled = !txt || !isConnected || !isInChat;
         if (connection && connection.state === signalR.HubConnectionState.Connected) {
             connection.invoke('Typing', txt.length > 0).catch(() => {});
-        }
-        if (charCounterEl) {
-            const left = 1000 - (messageInput.value.length || 0);
-            charCounterEl.textContent = `Осталось символов: ${left}`;
         }
     });
 
