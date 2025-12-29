@@ -138,15 +138,13 @@
             50% { opacity: 0.5; }
         }
 
-        /* МОБИЛЬНЫЕ СТИЛИ - ИСПРАВЛЕННЫЕ */
+        /* ТОЛЬКО НОРМАЛЬНЫЕ РАЗМЕРЫ КНОПОК КАК В ОРИГИНАЛЕ */
         @media (max-width: 768px) {
             body {
                 padding: 0 !important;
                 margin: 0 !important;
                 height: 100vh;
                 overflow: hidden;
-                position: fixed;
-                width: 100%;
             }
 
             body > div.max-w-4xl {
@@ -156,15 +154,12 @@
                 margin: 0 !important;
                 border-radius: 0 !important;
                 border: none !important;
-                position: relative;
             }
 
             #setupForm, #waitingScreen {
                 padding: 16px !important;
                 height: 100%;
                 overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-                position: relative;
             }
 
             .grid.md\:grid-cols-2 {
@@ -172,199 +167,43 @@
                 gap: 16px !important;
             }
 
-            /* РАБОЧИЙ СКРОЛЛ ДЛЯ ANDROID/IOS */
+            /* НОРМАЛЬНЫЙ СКРОЛЛ */
             #messagesContainer {
                 height: calc(100vh - 160px) !important;
-                padding: 12px 12px 100px 12px !important;
+                padding: 12px !important;
                 overflow-y: auto !important;
                 -webkit-overflow-scrolling: touch !important;
-                overscroll-behavior: contain !important;
-                scroll-behavior: smooth !important;
-                position: relative;
-                width: 100%;
-                box-sizing: border-box;
             }
 
-            /* Убираем скроллбар на мобильных для чистоты */
             #messagesContainer::-webkit-scrollbar {
-                display: none;
+                width: 3px;
             }
 
-            #messagesContainer {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
+            #messagesContainer::-webkit-scrollbar-track {
+                background: transparent;
             }
 
-            /* ИСПРАВЛЕННАЯ ПАНЕЛЬ ВВОДА */
-            .border-t.border-gray-200 {
-                position: fixed !important;
-                bottom: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                background: white !important;
-                padding: 10px 12px !important;
-                z-index: 1000 !important;
-                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-                display: flex !important;
-                align-items: center !important;
-                gap: 8px !important;
-                width: 100% !important;
-                box-sizing: border-box !important;
+            #messagesContainer::-webkit-scrollbar-thumb {
+                background: #7c3aed;
+                border-radius: 2px;
             }
 
-            [data-theme="dark"] .border-t.border-gray-200 {
-                background: #111827 !important;
-                border-color: #374151 !important;
-                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+            [data-theme="dark"] #messagesContainer::-webkit-scrollbar-thumb {
+                background: #6d28d9;
             }
 
-            /* ИСПРАВЛЕННАЯ КНОПКА ОТПРАВКИ - ТЕПЕРЬ ВИДНА ПОЛНОСТЬЮ */
-            #sendMessageBtn {
-                min-width: 44px !important;
-                min-height: 44px !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                flex-shrink: 0 !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                border-radius: 50% !important;
-                width: 44px !important;
-                height: 44px !important;
-            }
-
-            #sendMessageBtn i {
-                width: 20px !important;
-                height: 20px !important;
-            }
-
-            /* Поле ввода теперь занимает всё доступное пространство */
-            #messageInput {
-                font-size: 16px !important;
-                height: 44px !important;
-                padding: 0 14px !important;
-                flex: 1 !important;
-                min-width: 0 !important;
-                border-radius: 22px !important;
-                margin: 0 !important;
-            }
-
-            /* Кнопки как в оригинале android.html */
-            button, .gender-option, .comp-gender-option {
-                min-height: 44px !important;
-                min-width: 44px !important;
-            }
-
+            /* НОРМАЛЬНЫЕ КНОПКИ */
             .gender-option, .comp-gender-option {
                 padding: 10px 6px !important;
+                font-size: 12px !important;
+                min-height: 40px !important;
+                min-width: 40px !important;
+            }
+
+            .age-group, .comp-age-group {
+                padding: 10px !important;
+                margin-bottom: 6px !important;
                 font-size: 13px !important;
-            }
-
-            .age-group, .comp-age-group {
-                padding: 12px !important;
-                margin-bottom: 8px !important;
-                font-size: 14px !important;
-            }
-
-            .theme-selector {
-                width: 90px !important;
-                height: 90px !important;
-            }
-
-            .w-28 { width: 90px !important; }
-            .h-28 { height: 90px !important; }
-
-            /* Уменьшаем шрифты */
-            h1 { font-size: 1.8rem !important; }
-            h2 { font-size: 1.1rem !important; }
-            .text-lg { font-size: 0.95rem !important; }
-
-            /* Отступ для сообщений */
-            #messagesContainer {
-                padding-bottom: 100px !important;
-            }
-
-            /* Фикс для заголовка чата */
-            #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500 {
-                padding: 12px 16px !important;
-                position: relative;
-                z-index: 10;
-            }
-        }
-
-        /* Вертикальная ориентация */
-        @media (max-width: 768px) and (orientation: portrait) {
-            #messagesContainer {
-                height: calc(100vh - 150px) !important;
-                padding: 12px 12px 100px 12px !important;
-            }
-
-            /* Заголовок */
-            .bg-gradient-to-r.from-primary-500.to-secondary-500.p-8 {
-                padding: 12px 16px !important;
-            }
-
-            h1.text-4xl {
-                font-size: 1.6rem !important;
-            }
-
-            .text-lg {
-                font-size: 0.85rem !important;
-            }
-
-            /* Форма настроек */
-            #setupForm {
-                padding: 16px !important;
-                flex: 1;
-                overflow-y: auto !important;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .grid.md\:grid-cols-2 {
-                grid-template-columns: 1fr !important;
-                gap: 16px !important;
-            }
-
-            /* Заголовки */
-            h2.text-2xl {
-                font-size: 1.1rem !important;
-                margin-bottom: 12px !important;
-                padding-bottom: 8px !important;
-            }
-
-            /* Кнопки пола */
-            .gender-option, .comp-gender-option {
-                padding: 10px 6px !important;
-                font-size: 0.85rem !important;
-                min-height: 50px !important;
-            }
-
-            .gender-option i, .comp-gender-option i {
-                width: 1.2rem !important;
-                height: 1.2rem !important;
-                margin-bottom: 4px !important;
-            }
-
-            /* Блоки возраста */
-            .age-group, .comp-age-group {
-                padding: 12px !important;
-                margin-bottom: 8px !important;
-                font-size: 0.95rem !important;
-            }
-
-            .age-check {
-                width: 1.2rem !important;
-                height: 1.2rem !important;
-            }
-
-            .age-check i {
-                width: 0.9rem !important;
-                height: 0.9rem !important;
-            }
-
-            /* Выбор темы */
-            .mt-12 {
-                margin-top: 20px !important;
             }
 
             .theme-selector {
@@ -372,47 +211,246 @@
                 height: 80px !important;
             }
 
+            .w-28 { width: 80px !important; }
+            .h-28 { height: 80px !important; }
+
+            /* Нормальные шрифты */
+            h1 { font-size: 1.5rem !important; }
+            h2 { font-size: 1rem !important; }
+            .text-lg { font-size: 0.8rem !important; }
+
+            /* Нормальная панель ввода */
+            .border-t.border-gray-200 {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 10px 12px !important;
+                z-index: 100;
+            }
+
+            [data-theme="dark"] .border-t.border-gray-200 {
+                background: #111827;
+                border-color: #374151;
+            }
+
+            /* Отступ для сообщений */
+            #messagesContainer {
+                padding-bottom: 80px !important;
+            }
+
+            /* Нормальное поле ввода */
+            #messageInput {
+                font-size: 14px !important;
+                height: 36px !important;
+                padding: 0 12px !important;
+            }
+
+            /* НОРМАЛЬНАЯ КНОПКА ОТПРАВКИ */
+            #sendMessageBtn {
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
+                padding: 8px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+
+            #sendMessageBtn i {
+                width: 16px !important;
+                height: 16px !important;
+            }
+        }
+
+        /* Вертикальная ориентация */
+        @media (max-width: 768px) and (orientation: portrait) {
+            body {
+                padding: 0 !important;
+                margin: 0 !important;
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            body > div.max-w-4xl {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: 100vh !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+                border: none !important;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Уменьшаем заголовок */
+            .bg-gradient-to-r.from-primary-500.to-secondary-500.p-8 {
+                padding: 0.75rem !important;
+            }
+
+            h1.text-4xl {
+                font-size: 1.25rem !important;
+            }
+
+            .text-lg {
+                font-size: 0.75rem !important;
+            }
+
+            /* Делаем форму настроек прокручиваемой */
+            #setupForm {
+                padding: 0.75rem !important;
+                flex: 1;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch;
+                height: auto;
+            }
+
+            /* Одна колонка для мобильных */
+            .grid.md\:grid-cols-2 {
+                grid-template-columns: 1fr !important;
+                gap: 0.75rem !important;
+            }
+
+            /* Уменьшаем заголовки секций */
+            h2.text-2xl {
+                font-size: 0.9rem !important;
+                margin-bottom: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
+            }
+
+            /* Кнопки выбора пола */
+            .gender-option, .comp-gender-option {
+                padding: 0.5rem 0.25rem !important;
+                font-size: 0.7rem !important;
+                min-height: 40px !important;
+            }
+
+            .gender-option i, .comp-gender-option i {
+                width: 0.9rem !important;
+                height: 0.9rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            /* Блоки возраста */
+            .age-group, .comp-age-group {
+                padding: 0.5rem !important;
+                margin-bottom: 0.25rem !important;
+                font-size: 0.8rem !important;
+            }
+
+            .age-check {
+                width: 0.9rem !important;
+                height: 0.9rem !important;
+            }
+
+            .age-check i {
+                width: 0.7rem !important;
+                height: 0.7rem !important;
+            }
+
+            /* Уменьшаем выбор темы */
+            .mt-12 {
+                margin-top: 1rem !important;
+            }
+
+            .theme-selector {
+                width: 70px !important;
+                height: 70px !important;
+            }
+
             .theme-selector .w-20, .theme-selector .h-20 {
-                width: 50px !important;
-                height: 50px !important;
+                width: 40px !important;
+                height: 40px !important;
             }
 
             .theme-selector i {
-                width: 1.5rem !important;
-                height: 1.5rem !important;
+                width: 1.25rem !important;
+                height: 1.25rem !important;
             }
 
             /* Кнопка "Начать общение" */
             .mt-16 {
-                margin-top: 24px !important;
-                margin-bottom: 16px !important;
+                margin-top: 1rem !important;
+                margin-bottom: 0.5rem !important;
             }
 
             #startChatBtn {
-                padding: 12px 24px !important;
-                font-size: 0.95rem !important;
+                padding: 0.6rem 1rem !important;
+                font-size: 0.8rem !important;
                 width: 100% !important;
-                max-width: 280px !important;
+                max-width: 200px !important;
                 margin: 0 auto !important;
             }
 
             #startChatBtn i {
-                width: 1.1rem !important;
-                height: 1.1rem !important;
-                margin-left: 8px !important;
+                width: 0.9rem !important;
+                height: 0.9rem !important;
+                margin-left: 0.25rem !important;
             }
 
             /* Чат интерфейс */
             #chatInterface .bg-gradient-to-r.from-primary-500.to-secondary-500.p-6 {
-                padding: 12px 16px !important;
+                padding: 0.5rem 0.75rem !important;
             }
 
             #chatInterface h2 {
-                font-size: 1rem !important;
+                font-size: 0.9rem !important;
             }
 
-            #companionInfo {
-                font-size: 0.85rem !important;
+            #messagesContainer {
+                height: calc(100vh - 140px) !important;
+                padding: 0.5rem !important;
+                padding-bottom: 70px !important;
+            }
+
+            #messageInput {
+                font-size: 14px !important;
+                height: 36px !important;
+                padding: 0 0.75rem !important;
+            }
+
+            #sendMessageBtn {
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
+                padding: 8px !important;
+            }
+
+            #sendMessageBtn i {
+                width: 16px !important;
+                height: 16px !important;
+            }
+        }
+
+        /* Для очень маленьких экранов */
+        @media (max-width: 375px) {
+            .gender-option, .comp-gender-option {
+                padding: 8px 4px !important;
+                font-size: 10px !important;
+                min-height: 36px !important;
+            }
+
+            .theme-selector {
+                width: 60px !important;
+                height: 60px !important;
+            }
+
+            .theme-selector .w-20, .theme-selector .h-20 {
+                width: 35px !important;
+                height: 35px !important;
+            }
+
+            h1.text-4xl {
+                font-size: 1.1rem !important;
+            }
+
+            #startChatBtn {
+                padding: 0.5rem 0.75rem !important;
+                font-size: 0.75rem !important;
+                max-width: 180px !important;
             }
         }
 
@@ -420,46 +458,14 @@
         @media (max-width: 768px) and (orientation: landscape) {
             #messagesContainer {
                 height: calc(100vh - 120px) !important;
-                padding-bottom: 80px !important;
-            }
-            
-            .border-t.border-gray-200 {
-                padding: 8px 12px !important;
-            }
-            
-            #messageInput {
-                height: 40px !important;
-            }
-            
-            #sendMessageBtn {
-                width: 40px !important;
-                height: 40px !important;
-                min-width: 40px !important;
-                min-height: 40px !important;
+                padding-bottom: 70px !important;
             }
         }
 
-        /* iOS Safari specific fixes */
+        /* iOS Safari фикс для скролла */
         @supports (-webkit-touch-callout: none) {
             #messagesContainer {
                 -webkit-overflow-scrolling: touch !important;
-            }
-            
-            body {
-                /* Prevent pull-to-refresh on iOS */
-                overscroll-behavior-y: none;
-            }
-            
-            input, textarea {
-                /* Prevent iOS zoom on focus */
-                font-size: 16px !important;
-            }
-        }
-
-        /* Android Chrome specific fixes */
-        @media screen and (-webkit-min-device-pixel-ratio: 0) {
-            #messagesContainer {
-                scroll-behavior: smooth;
             }
         }
     </style>
@@ -476,7 +482,6 @@
 
     <!-- Setup Form -->
     <div id="setupForm" class="p-10">
-        <!-- ... форма настроек без изменений ... -->
         <div class="grid md:grid-cols-2 gap-10">
             <!-- Your Profile Section -->
             <div class="space-y-8">
@@ -636,14 +641,13 @@
             <!-- Messages will be added here -->
         </div>
 
-        <!-- ИСПРАВЛЕННАЯ ПАНЕЛЬ ВВОДА -->
         <div class="p-4 border-t border-gray-200">
             <div class="flex items-center gap-2 w-full">
                 <input
                     type="text"
                     id="messageInput"
                     placeholder="Введите сообщение..."
-                    class="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     maxlength="1000"
                 >
                 <button
@@ -753,8 +757,7 @@
             // Обработчики событий чата
             connection.on("ReceiveMessage", (message) => {
                 addMessageToChat(message.text, false);
-                // Автоскролл при получении сообщения
-                setTimeout(scrollToBottom, 100);
+                scrollToBottom();
             });
 
             connection.on("MatchFound", (companion) => {
@@ -774,8 +777,7 @@
                 } else if (companionInfoEl) {
                     companionInfoEl.textContent = '';
                 }
-                // Скролл вниз при открытии чата
-                setTimeout(scrollToBottom, 300);
+                scrollToBottom();
             });
 
             connection.on("UserJoined", (message) => {
@@ -814,8 +816,7 @@
                     inner.textContent = 'Собеседник печатает...';
                     window._typingNode.appendChild(inner);
                     messagesContainer.appendChild(window._typingNode);
-                    // Автоскролл при показе индикатора печати
-                    setTimeout(scrollToBottom, 50);
+                    scrollToBottom();
                     return;
                 }
                 if (window._typingNode && !isTyping) {
@@ -849,38 +850,13 @@
         }
     }
 
-    // УЛУЧШЕННАЯ функция для скролла вниз - РАБОТАЕТ НА ANDROID/IOS
+    // Простой скролл вниз
     function scrollToBottom() {
         if (!messagesContainer) return;
         
-        // Используем несколько методов для гарантии работы
-        const scrollMethods = [
-            () => {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            },
-            () => {
-                messagesContainer.scrollTo({
-                    top: messagesContainer.scrollHeight,
-                    behavior: 'smooth'
-                });
-            },
-            () => {
-                const lastChild = messagesContainer.lastElementChild;
-                if (lastChild) {
-                    lastChild.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                }
-            }
-        ];
-        
-        // Вызываем все методы с задержками
-        scrollMethods.forEach((method, index) => {
-            setTimeout(method, index * 100);
-        });
-        
-        // Дополнительный вызов через requestAnimationFrame
-        requestAnimationFrame(() => {
+        setTimeout(() => {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        });
+        }, 50);
     }
 
     // Вспомогательные функции
@@ -946,8 +922,7 @@
         waitingScreen.classList.add('hidden');
         isInChat = true;
         messageInput.focus();
-        // Автоскролл при открытии чата
-        setTimeout(scrollToBottom, 300);
+        scrollToBottom();
     }
 
     function addMessageToChat(text, isOwn = false) {
@@ -955,7 +930,7 @@
         messageDiv.className = `chat-message flex ${isOwn ? 'justify-end' : 'justify-start'}`;
 
         const messageContent = document.createElement('div');
-        messageContent.className = `max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
+        messageContent.className = `max-w-xs lg:max-w-md px-3 py-2 rounded-2xl ${
             isOwn
                 ? 'bg-primary-500 text-white'
                 : 'bg-gray-200 text-gray-800'
@@ -974,9 +949,7 @@
 
         messageDiv.appendChild(messageContent);
         messagesContainer.appendChild(messageDiv);
-        
-        // Автоскролл при добавлении сообщения
-        setTimeout(scrollToBottom, 150);
+        scrollToBottom();
     }
 
     function addSystemMessage(text) {
@@ -984,14 +957,12 @@
         messageDiv.className = 'chat-message flex justify-center';
 
         const messageContent = document.createElement('div');
-        messageContent.className = 'px-4 py-2 rounded-2xl bg-yellow-100 text-yellow-800 text-sm';
+        messageContent.className = 'px-3 py-2 rounded-2xl bg-yellow-100 text-yellow-800 text-sm';
         messageContent.textContent = text;
 
         messageDiv.appendChild(messageContent);
         messagesContainer.appendChild(messageDiv);
-        
-        // Автоскролл при добавлении системного сообщения
-        setTimeout(scrollToBottom, 150);
+        scrollToBottom();
         return messageDiv;
     }
 
@@ -1020,8 +991,7 @@
                     if (connection && connection.state === signalR.HubConnectionState.Connected) {
                         connection.invoke('Typing', false).catch(() => {});
                     }
-                    // Автоскролл после отправки
-                    setTimeout(scrollToBottom, 200);
+                    scrollToBottom();
                 })
                 .catch(err => {
                     console.error('Ошибка отправки сообщения:', err);
