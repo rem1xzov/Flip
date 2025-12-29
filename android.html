@@ -167,7 +167,7 @@
                 gap: 20px !important;
             }
 
-            /* СКРОЛЛ - ПРОВЕРЕННЫЙ РАБОЧИЙ ВАРИАНТ */
+            /* СКРОЛЛ ДЛЯ МОБИЛЬНЫХ */
             #messagesContainer {
                 height: calc(100vh - 180px) !important;
                 padding: 15px !important;
@@ -738,7 +738,8 @@
             // Обработчики событий чата
             connection.on("ReceiveMessage", (message) => {
                 addMessageToChat(message.text, false);
-                scrollToBottom();
+                // Автоскролл при получении сообщения
+                setTimeout(scrollToBottom, 100);
             });
 
             connection.on("MatchFound", (companion) => {
@@ -758,7 +759,8 @@
                 } else if (companionInfoEl) {
                     companionInfoEl.textContent = '';
                 }
-                setTimeout(scrollToBottom, 100);
+                // Скролл вниз при открытии чата
+                setTimeout(scrollToBottom, 200);
             });
 
             connection.on("UserJoined", (message) => {
@@ -797,7 +799,8 @@
                     inner.textContent = 'Собеседник печатает...';
                     window._typingNode.appendChild(inner);
                     messagesContainer.appendChild(window._typingNode);
-                    scrollToBottom();
+                    // Автоскролл при показе индикатора печати
+                    setTimeout(scrollToBottom, 50);
                     return;
                 }
                 if (window._typingNode && !isTyping) {
@@ -831,13 +834,24 @@
         }
     }
 
-    // Функция для скролла вниз - РАБОЧАЯ
+    // УЛУЧШЕННАЯ функция для скролла вниз
     function scrollToBottom() {
-        if (messagesContainer) {
-            setTimeout(() => {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }, 50);
-        }
+        if (!messagesContainer) return;
+        
+        // Несколько попыток для надежности
+        const scroll = () => {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        };
+        
+        // Вызываем сразу и с небольшими задержками
+        scroll();
+        setTimeout(scroll, 50);
+        setTimeout(scroll, 150);
+        
+        // Используем requestAnimationFrame для плавности
+        requestAnimationFrame(() => {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
     }
 
     // Вспомогательные функции
@@ -903,7 +917,8 @@
         waitingScreen.classList.add('hidden');
         isInChat = true;
         messageInput.focus();
-        setTimeout(scrollToBottom, 100);
+        // Автоскролл при открытии чата
+        setTimeout(scrollToBottom, 200);
     }
 
     function addMessageToChat(text, isOwn = false) {
@@ -930,7 +945,9 @@
 
         messageDiv.appendChild(messageContent);
         messagesContainer.appendChild(messageDiv);
-        scrollToBottom();
+        
+        // Автоскролл при добавлении сообщения
+        setTimeout(scrollToBottom, 100);
     }
 
     function addSystemMessage(text) {
@@ -943,7 +960,9 @@
 
         messageDiv.appendChild(messageContent);
         messagesContainer.appendChild(messageDiv);
-        scrollToBottom();
+        
+        // Автоскролл при добавлении системного сообщения
+        setTimeout(scrollToBottom, 100);
         return messageDiv;
     }
 
@@ -972,6 +991,8 @@
                     if (connection && connection.state === signalR.HubConnectionState.Connected) {
                         connection.invoke('Typing', false).catch(() => {});
                     }
+                    // Автоскролл после отправки
+                    setTimeout(scrollToBottom, 150);
                 })
                 .catch(err => {
                     console.error('Ошибка отправки сообщения:', err);
