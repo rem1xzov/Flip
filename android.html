@@ -177,6 +177,12 @@
                 padding: 16px !important;
                 padding-bottom: 80px !important;
             }
+            
+            /* Кнопки в шапке чата на десктопе */
+            #newCompanionBtn, #reportBtn, #leaveChatBtn {
+                padding: 8px 12px !important;
+                font-size: 14px !important;
+            }
         }
 
         /* МОБИЛЬНЫЕ СТИЛИ (до 768px) */
@@ -310,6 +316,16 @@
             #sendMessageBtn i {
                 width: 18px !important;
                 height: 18px !important;
+            }
+            
+            /* Кнопки в шапке чата на мобильных */
+            #newCompanionBtn, #reportBtn {
+                font-size: 11px !important;
+                padding: 6px 8px !important;
+            }
+            
+            #leaveChatBtn {
+                padding: 6px !important;
             }
         }
 
@@ -492,6 +508,16 @@
                 width: 18px !important;
                 height: 18px !important;
             }
+            
+            /* Кнопки в шапке на мобильных */
+            #newCompanionBtn, #reportBtn {
+                font-size: 10px !important;
+                padding: 5px 6px !important;
+            }
+            
+            #leaveChatBtn {
+                padding: 5px !important;
+            }
         }
 
         /* Для очень маленьких экранов */
@@ -541,6 +567,16 @@
                 min-width: 42px !important;
                 min-height: 42px !important;
             }
+            
+            /* Кнопки в шапке на очень маленьких экранах */
+            #newCompanionBtn, #reportBtn {
+                font-size: 9px !important;
+                padding: 4px 5px !important;
+            }
+            
+            #leaveChatBtn {
+                padding: 4px !important;
+            }
         }
 
         /* Горизонтальная ориентация */
@@ -564,6 +600,12 @@
                 min-width: 42px !important;
                 min-height: 42px !important;
             }
+            
+            /* Кнопки в шапке в ландшафте */
+            #newCompanionBtn, #reportBtn {
+                font-size: 10px !important;
+                padding: 5px 6px !important;
+            }
         }
 
         /* iOS Safari фикс для скролла */
@@ -572,6 +614,51 @@
                 -webkit-overflow-scrolling: touch !important;
                 padding-bottom: 80px !important;
             }
+        }
+        
+        /* Стили для модального окна жалобы */
+        #reportModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        #reportModal .modal-content {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            max-width: 90%;
+            width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        [data-theme="dark"] #reportModal .modal-content {
+            background: #1f2937;
+            color: #e5e7eb;
+        }
+        
+        #reportModal.hidden {
+            display: none;
+        }
+        
+        .report-option {
+            transition: all 0.2s;
+        }
+        
+        .report-option:hover {
+            background-color: rgba(124, 58, 237, 0.1);
+        }
+        
+        [data-theme="dark"] .report-option:hover {
+            background-color: rgba(124, 58, 237, 0.2);
         }
     </style>
 </head>
@@ -734,9 +821,13 @@
                     <p id="companionInfo" class="text-sm opacity-90"></p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button id="newCompanionBtn" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-all text-sm">Новый собеседник</button>
-                    <button id="leaveChatBtn" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-all">
-                        <i data-feather="x" class="w-5 h-5"></i>
+                    <button id="reportBtn" class="bg-red-500/20 hover:bg-red-500/30 px-3 py-2 rounded-full transition-all text-sm flex items-center gap-1">
+                        <i data-feather="flag" class="w-3 h-3"></i>
+                        <span class="hidden sm:inline">Пожаловаться</span>
+                    </button>
+                    <button id="newCompanionBtn" class="bg-white/20 hover:bg-white/30 px-3 py-2 rounded-full transition-all text-sm">Новый собеседник</button>
+                    <button id="leaveChatBtn" class="bg-white/20 hover:bg-white/30 px-3 py-2 rounded-full transition-all">
+                        <i data-feather="x" class="w-4 h-4"></i>
                     </button>
                 </div>
             </div>
@@ -785,6 +876,78 @@
     </div>
 </div>
 
+<!-- Модальное окно для жалобы -->
+<div id="reportModal" class="hidden">
+    <div class="modal-content">
+        <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Пожаловаться на собеседника</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">Выберите причину жалобы:</p>
+        
+        <div class="space-y-2 mb-4">
+            <div class="report-option p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer" data-reason="spam">
+                <div class="flex items-center">
+                    <div class="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 mr-3 flex items-center justify-center">
+                        <div class="w-2 h-2 rounded-full bg-primary-500 hidden"></div>
+                    </div>
+                    <div>
+                        <div class="font-medium">Спам или реклама</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Пользователь отправляет рекламные сообщения</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="report-option p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer" data-reason="offensive">
+                <div class="flex items-center">
+                    <div class="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 mr-3 flex items-center justify-center">
+                        <div class="w-2 h-2 rounded-full bg-primary-500 hidden"></div>
+                    </div>
+                    <div>
+                        <div class="font-medium">Оскорбления или угрозы</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Пользователь ведет себя агрессивно</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="report-option p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer" data-reason="inappropriate">
+                <div class="flex items-center">
+                    <div class="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 mr-3 flex items-center justify-center">
+                        <div class="w-2 h-2 rounded-full bg-primary-500 hidden"></div>
+                    </div>
+                    <div>
+                        <div class="font-medium">Неприемлемый контент</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Пользователь отправляет неподходящий контент</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="report-option p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer" data-reason="other">
+                <div class="flex items-center">
+                    <div class="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 mr-3 flex items-center justify-center">
+                        <div class="w-2 h-2 rounded-full bg-primary-500 hidden"></div>
+                    </div>
+                    <div>
+                        <div class="font-medium">Другая причина</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Укажите детали в поле ниже</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Дополнительные детали (необязательно):</label>
+            <textarea id="reportDetails" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-transparent text-gray-800 dark:text-white" rows="3" placeholder="Опишите проблему подробнее..."></textarea>
+        </div>
+        
+        <div class="flex justify-end space-x-3">
+            <button id="cancelReportBtn" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                Отмена
+            </button>
+            <button id="submitReportBtn" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+                Отправить жалобу
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
     feather.replace();
 
@@ -813,6 +976,13 @@
     const messagesContainer = document.getElementById('messagesContainer');
     const sendMessageBtn = document.getElementById('sendMessageBtn');
     const companionInfoEl = document.getElementById('companionInfo');
+    const reportModal = document.getElementById('reportModal');
+    const reportDetails = document.getElementById('reportDetails');
+    const cancelReportBtn = document.getElementById('cancelReportBtn');
+    const submitReportBtn = document.getElementById('submitReportBtn');
+    
+    // Текущая выбранная причина жалобы
+    let selectedReportReason = null;
 
     // Функция для получения URL хаба
     function getHubUrl() {
@@ -1131,6 +1301,59 @@
         }
     }
 
+    // ФУНКЦИИ ДЛЯ РАБОТЫ С ЖАЛОБАМИ
+    function openReportModal() {
+        selectedReportReason = null;
+        reportDetails.value = '';
+        
+        // Сбрасываем выбор
+        document.querySelectorAll('.report-option').forEach(option => {
+            const dot = option.querySelector('.w-2');
+            if (dot) dot.classList.add('hidden');
+            option.style.backgroundColor = '';
+        });
+        
+        reportModal.classList.remove('hidden');
+    }
+
+    function closeReportModal() {
+        reportModal.classList.add('hidden');
+    }
+
+    function submitReport() {
+        if (!selectedReportReason) {
+            alert('Пожалуйста, выберите причину жалобы');
+            return;
+        }
+
+        const report = {
+            timestamp: new Date().toISOString(),
+            reason: selectedReportReason,
+            details: reportDetails.value.trim(),
+            companionInfo: companionInfoEl ? companionInfoEl.textContent : 'Неизвестно'
+        };
+
+        // Сохраняем жалобу в localStorage
+        try {
+            let reports = JSON.parse(localStorage.getItem('flipchat_reports') || '[]');
+            reports.push(report);
+            localStorage.setItem('flipchat_reports', JSON.stringify(reports));
+            console.log('Жалоба сохранена:', report);
+            
+            // Показываем уведомление
+            addSystemMessage('Жалоба отправлена. Спасибо за вашу бдительность!');
+            
+            // Закрываем модальное окно
+            closeReportModal();
+            
+            // Показываем всплывающее уведомление
+            alert('Жалоба успешно отправлена. Администрация рассмотрит её в ближайшее время.');
+        } catch (error) {
+            console.error('Ошибка при сохранении жалобы:', error);
+            alert('Произошла ошибка при отправке жалобы. Попробуйте ещё раз.');
+        }
+    }
+
     // Обработчики событий для выбора пола, возраста и темы
     const genderOptions = document.querySelectorAll('.gender-option');
     const compGenderOptions = document.querySelectorAll('.comp-gender-option');
@@ -1268,6 +1491,29 @@
         }
         showSetupForm();
         startChatBtn.disabled = false;
+    });
+
+    // Обработчики для кнопки "Пожаловаться"
+    document.getElementById('reportBtn').addEventListener('click', openReportModal);
+    cancelReportBtn.addEventListener('click', closeReportModal);
+    submitReportBtn.addEventListener('click', submitReport);
+
+    // Обработчики для выбора причины жалобы
+    document.querySelectorAll('.report-option').forEach(option => {
+        option.addEventListener('click', function() {
+            // Сбрасываем предыдущий выбор
+            document.querySelectorAll('.report-option').forEach(opt => {
+                const dot = opt.querySelector('.w-2');
+                if (dot) dot.classList.add('hidden');
+                opt.style.backgroundColor = '';
+            });
+            
+            // Выбираем текущий
+            selectedReportReason = this.dataset.reason;
+            const dot = this.querySelector('.w-2');
+            if (dot) dot.classList.remove('hidden');
+            this.style.backgroundColor = userData.theme === 'dark' ? 'rgba(124, 58, 237, 0.2)' : 'rgba(124, 58, 237, 0.1)';
+        });
     });
 
     // Инициализация при загрузке страницы
