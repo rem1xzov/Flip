@@ -880,7 +880,7 @@
 <div id="reportModal" class="hidden">
     <div class="modal-content">
         <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Пожаловаться на собеседника</h3>
-        <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">Выберите причину жалобы:</p>
+        <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">Выберите причину жалобы. После отправки жалобы чат будет автоматически завершен.</p>
         
         <div class="space-y-2 mb-4">
             <div class="report-option p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer" data-reason="spam">
@@ -942,7 +942,7 @@
                 Отмена
             </button>
             <button id="submitReportBtn" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
-                Отправить жалобу
+                Отправить жалобу и завершить чат
             </button>
         </div>
     </div>
@@ -1340,14 +1340,35 @@
             localStorage.setItem('flipchat_reports', JSON.stringify(reports));
             console.log('Жалоба сохранена:', report);
             
-            // Показываем уведомление
-            addSystemMessage('Жалоба отправлена. Спасибо за вашу бдительность!');
+            // Добавляем системное сообщение о завершении чата
+            addSystemMessage('Чат завершен из-за отправленной жалобы. Спасибо за вашу бдительность!');
             
             // Закрываем модальное окно
             closeReportModal();
             
-            // Показываем всплывающее уведомление
-            alert('Жалоба успешно отправлена. Администрация рассмотрит её в ближайшее время.');
+            // Отключаемся от чата (имитируем выход)
+            if (connection && isConnected) {
+                connection.stop();
+            }
+            
+            // Показываем уведомление
+            alert('Жалоба успешно отправлена. Чат завершен. Спасибо за вашу бдительность!');
+            
+            // Завершаем чат и возвращаем на главную через 2 секунды
+            setTimeout(() => {
+                isInChat = false;
+                isJoiningChat = false;
+                clearChat();
+                showSetupForm();
+                validateForm();
+                startChatBtn.disabled = false;
+                
+                // Переподключаемся к SignalR
+                if (!isConnected) {
+                    initializeSignalR();
+                }
+            }, 2000);
+            
         } catch (error) {
             console.error('Ошибка при сохранении жалобы:', error);
             alert('Произошла ошибка при отправке жалобы. Попробуйте ещё раз.');
