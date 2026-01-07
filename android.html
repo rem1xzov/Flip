@@ -2,7 +2,7 @@
 <html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Flip Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
@@ -35,9 +35,46 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
+        /* ФИКС ДЛЯ iOS - ПРЕДОТВРАЩАЕМ ZOOM ПРИ ФОКУСЕ */
+        input, textarea, select {
+            font-size: 16px !important; /* iOS не будет зумить при 16px+ */
+        }
+        
+        /* Дополнительный фикс для полей ввода */
+        @media screen and (max-width: 767px) {
+            input[type="text"], 
+            input[type="email"], 
+            input[type="tel"], 
+            input[type="password"], 
+            input[type="search"],
+            textarea {
+                font-size: 16px !important;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+            
+            /* Особый фикс для поля ввода сообщения */
+            #messageInput {
+                font-size: 16px !important;
+                -webkit-text-size-adjust: 100%;
+                -moz-text-size-adjust: 100%;
+                text-size-adjust: 100%;
+            }
+        }
+        
+        /* Отключаем выделение при тапе для всех интерактивных элементов */
+        button, input, a {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
         /* Dark theme overrides */
         [data-theme="dark"] body {
@@ -162,7 +199,7 @@
             /* Поле ввода тоже чуть больше */
             #messageInput {
                 height: 48px !important;
-                font-size: 15px !important;
+                font-size: 16px !important; /* Фикс для iOS */
                 padding: 0 16px !important;
             }
 
@@ -192,6 +229,9 @@
                 margin: 0 !important;
                 height: 100vh;
                 overflow: hidden;
+                -webkit-text-size-adjust: 100%; /* Предотвращаем авто-зум */
+                -moz-text-size-adjust: 100%;
+                text-size-adjust: 100%;
             }
 
             body > div.max-w-4xl {
@@ -291,12 +331,18 @@
                 border-color: #374151 !important;
             }
 
-            /* Поле ввода */
+            /* Поле ввода - ОСНОВНОЙ ФИКС ДЛЯ iOS */
             #messageInput {
-                font-size: 14px !important;
+                font-size: 16px !important; /* iOS не зумит при 16px+ */
                 height: 44px !important;
                 padding: 0 12px !important;
                 flex: 1 !important;
+                -webkit-text-size-adjust: 100%;
+                -moz-text-size-adjust: 100%;
+                text-size-adjust: 100%;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
             }
 
             /* Кнопка отправки */
@@ -492,7 +538,7 @@
             }
 
             #messageInput {
-                font-size: 14px !important;
+                font-size: 16px !important; /* Фикс для iOS */
                 height: 44px !important;
                 padding: 0 12px !important;
             }
@@ -559,6 +605,7 @@
             
             #messageInput {
                 height: 42px !important;
+                font-size: 16px !important; /* Важно сохранить 16px */
             }
             
             #sendMessageBtn {
@@ -592,6 +639,7 @@
             
             #messageInput {
                 height: 42px !important;
+                font-size: 16px !important; /* Важно сохранить 16px */
             }
             
             #sendMessageBtn {
@@ -613,6 +661,13 @@
             #messagesContainer {
                 -webkit-overflow-scrolling: touch !important;
                 padding-bottom: 80px !important;
+            }
+            
+            /* Дополнительный фикс для iOS */
+            input, textarea {
+                font-size: 16px !important;
+                -webkit-user-select: text;
+                user-select: text;
             }
         }
         
@@ -1577,3 +1632,4 @@
 </script>
 </body>
 </html>
+
