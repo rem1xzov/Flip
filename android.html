@@ -178,22 +178,29 @@
         /* СТИЛИ ДЛЯ ДЕСКТОПОВ (больше 768px) */
         @media (min-width: 769px) {
             /* КНОПКА ОТПРАВКИ НА КОМПЬЮТЕРАХ - чуть больше чем на телефоне */
-            #sendMessageBtn {
-                width: 48px !important;
-                height: 48px !important;
-                min-width: 48px !important;
-                min-height: 48px !important;
+            /* Кнопка отправки: Android fix — компактная и ровно выровненная */
+#sendMessageBtn {
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
+                padding: 0 !important;
+                margin-left: 8px !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
-                padding: 0 !important;
+                flex-shrink: 0 !important;
+                align-self: center !important;
+                box-sizing: border-box !important;
+                transform: translateY(0) !important;
+                position: relative !important;
             }
 
             #sendMessageBtn i {
-                width: 20px !important;
-                height: 20px !important;
+                width: 16px !important;
+                height: 16px !important;
                 display: block !important;
-                margin: 0 auto !important;
+                margin: 0 !important;
             }
 
             /* Поле ввода тоже чуть больше */
@@ -204,9 +211,20 @@
             }
 
             /* Панель ввода */
-            .border-t.border-gray-200 {
-                padding: 10px 16px !important;
-                height: 68px !important;
+            /* Панель ввода — фикс для мобильных (учтены безопасные области Android/iOS) */
+.border-t.border-gray-200 {
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                background: white !important;
+                padding: calc(env(safe-area-inset-bottom, 0px) + 8px) 12px 12px !important;
+                z-index: 100 !important;
+                height: auto !important;
+                display: flex !important;
+                align-items: center !important;
+                border-top: 1px solid #e5e7eb !important;
+                box-sizing: border-box !important;
             }
 
             /* Чуть больше отступы в чате */
@@ -312,23 +330,36 @@
             .text-lg { font-size: 0.8rem !important; }
 
             /* ПАНЕЛЬ ВВОДА - МОБИЛЬНЫЙ РАЗМЕР */
-            .border-t.border-gray-200 {
+            /* Панель ввода — фикс для мобильных (учтены безопасные области Android/iOS) */
+.border-t.border-gray-200 {
                 position: fixed !important;
                 bottom: 0 !important;
                 left: 0 !important;
                 right: 0 !important;
                 background: white !important;
-                padding: 8px 12px !important;
+                padding: calc(env(safe-area-inset-bottom, 0px) + 8px) 12px 12px !important;
                 z-index: 100 !important;
-                height: 60px !important;
+                height: auto !important;
                 display: flex !important;
                 align-items: center !important;
                 border-top: 1px solid #e5e7eb !important;
+                box-sizing: border-box !important;
             }
 
-            [data-theme="dark"] .border-t.border-gray-200 {
-                background: #111827 !important;
-                border-color: #374151 !important;
+            [data-theme="dark"] /* Панель ввода — фикс для мобильных (учтены безопасные области Android/iOS) */
+.border-t.border-gray-200 {
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                background: white !important;
+                padding: calc(env(safe-area-inset-bottom, 0px) + 8px) 12px 12px !important;
+                z-index: 100 !important;
+                height: auto !important;
+                display: flex !important;
+                align-items: center !important;
+                border-top: 1px solid #e5e7eb !important;
+                box-sizing: border-box !important;
             }
 
             /* Поле ввода - ОСНОВНОЙ ФИКС ДЛЯ iOS */
@@ -346,23 +377,29 @@
             }
 
             /* Кнопка отправки: уменьшил размер и центрировал по вертикали для Android */
-            #sendMessageBtn {
-                width: 40px !important;
-                height: 40px !important;
-                min-width: 40px !important;
-                min-height: 40px !important;
+            /* Кнопка отправки: Android fix — компактная и ровно выровненная */
+#sendMessageBtn {
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
                 padding: 0 !important;
-                margin-left: 6px !important;
+                margin-left: 8px !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
                 flex-shrink: 0 !important;
                 align-self: center !important;
+                box-sizing: border-box !important;
+                transform: translateY(0) !important;
+                position: relative !important;
             }
 
             #sendMessageBtn i {
                 width: 16px !important;
                 height: 16px !important;
+                display: block !important;
+                margin: 0 !important;
             }
 
             /* Кнопки в шапке чата на мобильных */
@@ -544,16 +581,29 @@
                 padding: 0 12px !important;
             }
 
-            #sendMessageBtn {
-                width: 40px !important;
-                height: 40px !important;
-                min-width: 40px !important;
-                min-height: 40px !important;
+            /* Кнопка отправки: Android fix — компактная и ровно выровненная */
+#sendMessageBtn {
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
+                padding: 0 !important;
+                margin-left: 8px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex-shrink: 0 !important;
+                align-self: center !important;
+                box-sizing: border-box !important;
+                transform: translateY(0) !important;
+                position: relative !important;
             }
 
             #sendMessageBtn i {
                 width: 16px !important;
                 height: 16px !important;
+                display: block !important;
+                margin: 0 !important;
             }
 
             /* Кнопки в шапке на мобильных */
@@ -599,9 +649,20 @@
                 padding-bottom: 60px !important;
             }
 
-            .border-t.border-gray-200 {
-                height: 55px !important;
-                padding: 6px 10px !important;
+            /* Панель ввода — фикс для мобильных (учтены безопасные области Android/iOS) */
+.border-t.border-gray-200 {
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                background: white !important;
+                padding: calc(env(safe-area-inset-bottom, 0px) + 8px) 12px 12px !important;
+                z-index: 100 !important;
+                height: auto !important;
+                display: flex !important;
+                align-items: center !important;
+                border-top: 1px solid #e5e7eb !important;
+                box-sizing: border-box !important;
             }
 
             #messageInput {
@@ -609,11 +670,22 @@
                 font-size: 16px !important; /* Важно сохранить 16px */
             }
 
-            #sendMessageBtn {
-                width: 40px !important;
-                height: 40px !important;
-                min-width: 40px !important;
-                min-height: 40px !important;
+            /* Кнопка отправки: Android fix — компактная и ровно выровненная */
+#sendMessageBtn {
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
+                padding: 0 !important;
+                margin-left: 8px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex-shrink: 0 !important;
+                align-self: center !important;
+                box-sizing: border-box !important;
+                transform: translateY(0) !important;
+                position: relative !important;
             }
 
             /* Кнопки в шапке на очень маленьких экранах */
@@ -633,9 +705,20 @@
                 padding-bottom: 60px !important;
             }
 
-            .border-t.border-gray-200 {
-                height: 55px !important;
-                padding: 6px 10px !important;
+            /* Панель ввода — фикс для мобильных (учтены безопасные области Android/iOS) */
+.border-t.border-gray-200 {
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                background: white !important;
+                padding: calc(env(safe-area-inset-bottom, 0px) + 8px) 12px 12px !important;
+                z-index: 100 !important;
+                height: auto !important;
+                display: flex !important;
+                align-items: center !important;
+                border-top: 1px solid #e5e7eb !important;
+                box-sizing: border-box !important;
             }
 
             #messageInput {
@@ -643,11 +726,22 @@
                 font-size: 16px !important; /* Важно сохранить 16px */
             }
 
-            #sendMessageBtn {
-                width: 40px !important;
-                height: 40px !important;
-                min-width: 40px !important;
-                min-height: 40px !important;
+            /* Кнопка отправки: Android fix — компактная и ровно выровненная */
+#sendMessageBtn {
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
+                padding: 0 !important;
+                margin-left: 8px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex-shrink: 0 !important;
+                align-self: center !important;
+                box-sizing: border-box !important;
+                transform: translateY(0) !important;
+                position: relative !important;
             }
 
             /* Кнопки в шапке в ландшафте */
