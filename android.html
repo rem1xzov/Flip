@@ -39,13 +39,13 @@
         input, textarea, select {
             font-size: 16px !important; /* iOS не будет зумить при 16px+ */
         }
-        
+
         /* Дополнительный фикс для полей ввода */
         @media screen and (max-width: 767px) {
-            input[type="text"], 
-            input[type="email"], 
-            input[type="tel"], 
-            input[type="password"], 
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="password"],
             input[type="search"],
             textarea {
                 font-size: 16px !important;
@@ -53,7 +53,7 @@
                 -moz-appearance: none;
                 appearance: none;
             }
-            
+
             /* Особый фикс для поля ввода сообщения */
             #messageInput {
                 font-size: 16px !important;
@@ -62,7 +62,7 @@
                 text-size-adjust: 100%;
             }
         }
-        
+
         /* Отключаем выделение при тапе для всех интерактивных элементов */
         button, input, a {
             -webkit-tap-highlight-color: transparent;
@@ -214,7 +214,7 @@
                 padding: 16px !important;
                 padding-bottom: 80px !important;
             }
-            
+
             /* Кнопки в шапке чата на десктопе */
             #newCompanionBtn, #reportBtn, #leaveChatBtn {
                 padding: 8px 12px !important;
@@ -345,31 +345,32 @@
                 appearance: none;
             }
 
-            /* Кнопка отправки */
+            /* Кнопка отправки: уменьшил размер и центрировал по вертикали для Android */
             #sendMessageBtn {
-                width: 44px !important;
-                height: 44px !important;
-                min-width: 44px !important;
-                min-height: 44px !important;
+                width: 40px !important;
+                height: 40px !important;
+                min-width: 40px !important;
+                min-height: 40px !important;
                 padding: 0 !important;
-                margin-left: 8px !important;
+                margin-left: 6px !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
                 flex-shrink: 0 !important;
+                align-self: center !important;
             }
 
             #sendMessageBtn i {
-                width: 18px !important;
-                height: 18px !important;
+                width: 16px !important;
+                height: 16px !important;
             }
-            
+
             /* Кнопки в шапке чата на мобильных */
             #newCompanionBtn, #reportBtn {
                 font-size: 11px !important;
                 padding: 6px 8px !important;
             }
-            
+
             #leaveChatBtn {
                 padding: 6px !important;
             }
@@ -395,11 +396,11 @@
                 flex-direction: column !important;
             }
 
-            /* ЧАТ ИНТЕРФЕЙС ДОЛЖЕН БЫТЬ FLEX-КОНТЕЙНЕРОМ ТОЛЬКО КОГДА ПОКАЗАН */
+            /* ЧАТ ИНТЕРФЕЙС ДОЛЖЕН БЫТЬ FLEX-КОНТЕРОМ ТОЛЬКО КОГДА ПОКАЗАН */
             #chatInterface.hidden {
                 display: none !important;
             }
-            
+
             #chatInterface:not(.hidden) {
                 display: flex !important;
                 flex-direction: column !important;
@@ -544,23 +545,23 @@
             }
 
             #sendMessageBtn {
-                width: 44px !important;
-                height: 44px !important;
-                min-width: 44px !important;
-                min-height: 44px !important;
+                width: 40px !important;
+                height: 40px !important;
+                min-width: 40px !important;
+                min-height: 40px !important;
             }
 
             #sendMessageBtn i {
-                width: 18px !important;
-                height: 18px !important;
+                width: 16px !important;
+                height: 16px !important;
             }
-            
+
             /* Кнопки в шапке на мобильных */
             #newCompanionBtn, #reportBtn {
                 font-size: 10px !important;
                 padding: 5px 6px !important;
             }
-            
+
             #leaveChatBtn {
                 padding: 5px !important;
             }
@@ -593,34 +594,34 @@
                 font-size: 0.75rem !important;
                 max-width: 180px !important;
             }
-            
+
             #messagesContainer {
                 padding-bottom: 60px !important;
             }
-            
+
             .border-t.border-gray-200 {
                 height: 55px !important;
                 padding: 6px 10px !important;
             }
-            
+
             #messageInput {
                 height: 42px !important;
                 font-size: 16px !important; /* Важно сохранить 16px */
             }
-            
+
             #sendMessageBtn {
-                width: 42px !important;
-                height: 42px !important;
-                min-width: 42px !important;
-                min-height: 42px !important;
+                width: 40px !important;
+                height: 40px !important;
+                min-width: 40px !important;
+                min-height: 40px !important;
             }
-            
+
             /* Кнопки в шапке на очень маленьких экранах */
             #newCompanionBtn, #reportBtn {
                 font-size: 9px !important;
                 padding: 4px 5px !important;
             }
-            
+
             #leaveChatBtn {
                 padding: 4px !important;
             }
@@ -631,24 +632,24 @@
             #messagesContainer {
                 padding-bottom: 60px !important;
             }
-            
+
             .border-t.border-gray-200 {
                 height: 55px !important;
                 padding: 6px 10px !important;
             }
-            
+
             #messageInput {
                 height: 42px !important;
                 font-size: 16px !important; /* Важно сохранить 16px */
             }
-            
+
             #sendMessageBtn {
-                width: 42px !important;
-                height: 42px !important;
-                min-width: 42px !important;
-                min-height: 42px !important;
+                width: 40px !important;
+                height: 40px !important;
+                min-width: 40px !important;
+                min-height: 40px !important;
             }
-            
+
             /* Кнопки в шапке в ландшафте */
             #newCompanionBtn, #reportBtn {
                 font-size: 10px !important;
@@ -662,7 +663,7 @@
                 -webkit-overflow-scrolling: touch !important;
                 padding-bottom: 80px !important;
             }
-            
+
             /* Дополнительный фикс для iOS */
             input, textarea {
                 font-size: 16px !important;
@@ -670,7 +671,7 @@
                 user-select: text;
             }
         }
-        
+
         /* Стили для модального окна жалобы */
         #reportModal {
             position: fixed;
@@ -684,7 +685,7 @@
             justify-content: center;
             z-index: 1000;
         }
-        
+
         #reportModal .modal-content {
             background: white;
             border-radius: 1rem;
@@ -694,24 +695,24 @@
             max-height: 90vh;
             overflow-y: auto;
         }
-        
+
         [data-theme="dark"] #reportModal .modal-content {
             background: #1f2937;
             color: #e5e7eb;
         }
-        
+
         #reportModal.hidden {
             display: none;
         }
-        
+
         .report-option {
             transition: all 0.2s;
         }
-        
+
         .report-option:hover {
             background-color: rgba(124, 58, 237, 0.1);
         }
-        
+
         [data-theme="dark"] .report-option:hover {
             background-color: rgba(124, 58, 237, 0.2);
         }
@@ -801,7 +802,7 @@
                             <i data-feather="user" class="w-6 h-6 mb-2"></i>
                             <span>Жен.</span>
                         </button>
-                        <button class="comp-gender-option py-4 px-4 rounded-full border-2 border-gray-200 hover:bg-gray-50 flex flex-col items-center justify-center transition-all hover:border-secondary-500" data-gender="any">
+                        <button class="comp-gender-option py-4 px-4 rounded-full border-2 border-gray-200 hover:bg-gray-50 flex flex-col items-center justify-center transition-all hover;border-secondary-500" data-gender="any">
                             <i data-feather="users" class="w-6 h-6 mb-2"></i>
                             <span>Любой</span>
                         </button>
@@ -820,7 +821,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="comp-age-group relative p-5 rounded-xl border-2 border-gray-200 hover:bg-gray-50 cursor-pointer transition-all hover:border-secondary-500" data-age="15-17">
+                        <div class="comp-age-group relative p-5 rounded-xl border-2 border-gray-200 hover:bg-gray-50 cursor-pointer transition-all hover;border-secondary-500" data-age="15-17">
                             <div class="flex justify-between items-center">
                                 <span class="font-medium">15 - 17</span>
                                 <div class="age-check w-6 h-6 rounded-full border-2 border-gray-300 opacity-0 flex items-center justify-center">
@@ -828,7 +829,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="comp-age-group relative p-5 rounded-xl border-2 border-gray-200 hover:bg-gray-50 cursor-pointer transition-all hover:border-secondary-500" data-age="18plus">
+                        <div class="comp-age-group relative p-5 rounded-xl border-2 border-gray-200 hover:bg-gray-50 cursor-pointer transition-all hover;border-secondary-500" data-age="18plus">
                             <div class="flex justify-between items-center">
                                 <span class="font-medium">18 и выше</span>
                                 <div class="age-check w-6 h-6 rounded-full border-2 border-gray-300 opacity-0 flex items-center justify-center">
@@ -895,15 +896,15 @@
         <div class="p-4 border-t border-gray-200">
             <div class="flex items-center gap-2 w-full">
                 <input
-                    type="text"
-                    id="messageInput"
-                    placeholder="Введите сообщение..."
-                    class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    maxlength="1000"
+                        type="text"
+                        id="messageInput"
+                        placeholder="Введите сообщение..."
+                        class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        maxlength="1000"
                 >
                 <button
-                    id="sendMessageBtn"
-                    class="btn-primary text-white font-semibold rounded-full transition-all duration-300 flex-shrink-0"
+                        id="sendMessageBtn"
+                        class="btn-primary text-white font-semibold rounded-full transition-all duration-300 flex-shrink-0"
                 >
                     <i data-feather="send" class="w-5 h-5"></i>
                 </button>
@@ -936,7 +937,7 @@
     <div class="modal-content">
         <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Пожаловаться на собеседника</h3>
         <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">Выберите причину жалобы. После отправки жалобы чат будет автоматически завершен.</p>
-        
+
         <div class="space-y-2 mb-4">
             <div class="report-option p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer" data-reason="spam">
                 <div class="flex items-center">
@@ -949,7 +950,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="report-option p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer" data-reason="offensive">
                 <div class="flex items-center">
                     <div class="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 mr-3 flex items-center justify-center">
@@ -961,7 +962,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="report-option p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer" data-reason="inappropriate">
                 <div class="flex items-center">
                     <div class="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 mr-3 flex items-center justify-center">
@@ -973,7 +974,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="report-option p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer" data-reason="other">
                 <div class="flex items-center">
                     <div class="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 mr-3 flex items-center justify-center">
@@ -986,12 +987,12 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Дополнительные детали (необязательно):</label>
             <textarea id="reportDetails" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-transparent text-gray-800 dark:text-white" rows="3" placeholder="Опишите проблему подробнее..."></textarea>
         </div>
-        
+
         <div class="flex justify-end space-x-3">
             <button id="cancelReportBtn" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
                 Отмена
@@ -1035,7 +1036,7 @@
     const reportDetails = document.getElementById('reportDetails');
     const cancelReportBtn = document.getElementById('cancelReportBtn');
     const submitReportBtn = document.getElementById('submitReportBtn');
-    
+
     // Текущая выбранная причина жалобы
     let selectedReportReason = null;
 
@@ -1181,18 +1182,18 @@
     // УЛУЧШЕННАЯ функция для скролла вниз - ОСНОВНОЕ ИСПРАВЛЕНИЕ
     function scrollToBottom() {
         if (!messagesContainer) return;
-        
+
         // Основной метод - прокрутка до самого низа
         const scroll = () => {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         };
-        
+
         // Вызываем несколько раз с задержками для надежности
         scroll();
         setTimeout(scroll, 10);
         setTimeout(scroll, 50);
         setTimeout(scroll, 100);
-        
+
         // Дополнительно используем requestAnimationFrame
         requestAnimationFrame(() => {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -1248,7 +1249,7 @@
         waitingScreen.classList.add('hidden');
         isInChat = false;
         isJoiningChat = false;
-        
+
         // Важно: сбрасываем все inline стили у chatInterface
         chatInterface.style.display = '';
         chatInterface.style.flexDirection = '';
@@ -1272,7 +1273,7 @@
         isInChat = true;
         isJoiningChat = false;
         messageInput.focus();
-        
+
         // Даем время на рендеринг, потом скроллим
         setTimeout(scrollToBottom, 100);
     }
@@ -1301,7 +1302,7 @@
 
         messageDiv.appendChild(messageContent);
         messagesContainer.appendChild(messageDiv);
-        
+
         // Скроллим с небольшой задержкой
         setTimeout(scrollToBottom, 10);
     }
@@ -1316,7 +1317,7 @@
 
         messageDiv.appendChild(messageContent);
         messagesContainer.appendChild(messageDiv);
-        
+
         // Скроллим с задержкой
         setTimeout(scrollToBottom, 10);
         return messageDiv;
@@ -1360,14 +1361,14 @@
     function openReportModal() {
         selectedReportReason = null;
         reportDetails.value = '';
-        
+
         // Сбрасываем выбор
         document.querySelectorAll('.report-option').forEach(option => {
             const dot = option.querySelector('.w-2');
             if (dot) dot.classList.add('hidden');
             option.style.backgroundColor = '';
         });
-        
+
         reportModal.classList.remove('hidden');
     }
 
@@ -1394,21 +1395,21 @@
             reports.push(report);
             localStorage.setItem('flipchat_reports', JSON.stringify(reports));
             console.log('Жалоба сохранена:', report);
-            
+
             // Добавляем системное сообщение о завершении чата
             addSystemMessage('Чат завершен из-за отправленной жалобы. Спасибо за вашу бдительность!');
-            
+
             // Закрываем модальное окно
             closeReportModal();
-            
+
             // Отключаемся от чата (имитируем выход)
             if (connection && isConnected) {
                 connection.stop();
             }
-            
+
             // Показываем уведомление
             alert('Жалоба успешно отправлена. Чат завершен. Спасибо за вашу бдительность!');
-            
+
             // Завершаем чат и возвращаем на главную через 2 секунды
             setTimeout(() => {
                 isInChat = false;
@@ -1417,13 +1418,13 @@
                 showSetupForm();
                 validateForm();
                 startChatBtn.disabled = false;
-                
+
                 // Переподключаемся к SignalR
                 if (!isConnected) {
                     initializeSignalR();
                 }
             }, 2000);
-            
+
         } catch (error) {
             console.error('Ошибка при сохранении жалобы:', error);
             alert('Произошла ошибка при отправке жалобы. Попробуйте ещё раз.');
@@ -1583,7 +1584,7 @@
                 if (dot) dot.classList.add('hidden');
                 opt.style.backgroundColor = '';
             });
-            
+
             // Выбираем текущий
             selectedReportReason = this.dataset.reason;
             const dot = this.querySelector('.w-2');
@@ -1632,4 +1633,3 @@
 </script>
 </body>
 </html>
-
