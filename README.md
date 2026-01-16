@@ -175,7 +175,7 @@ POST /api/chat/leave
 ### Запуск
 
 ```bash
-git clone https://github.com/your-username/FlipChatAnon.git
+git clone https://github.com/rem1x_zov/FlipChatAnon.git
 cd FlipChatAnon
 
 dotnet ef database update
